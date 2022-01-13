@@ -1,0 +1,6 @@
+package com.example.audioblink
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
