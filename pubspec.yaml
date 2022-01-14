@@ -61,5 +61,7 @@ flutter:
         - asset: assets/fonts/sf_pro_display_medium.OTF
           weight: 600
         - asset: assets/fonts/sf_pro_display_regular.OTF
+          weight: 400
+        - asset: assets/fonts/sf_pro_text_thin.otf
           weight: 200
   #
