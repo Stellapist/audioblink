@@ -6,6 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
+import 'misc.dart';
+
 //LIST OF CATEGORIES
 List<OutlinedButton> getCategories() {
   List<String> categories = [
@@ -24,7 +26,7 @@ List<OutlinedButton> getCategories() {
     'Υγεία',
     'Εκπαίδευση',
     'Μαγειρική',
-    'Ποίηση'
+    'Ποίηση',
   ];
 
   final categoryButtons = <OutlinedButton>[];
@@ -45,12 +47,17 @@ List<OutlinedButton> getCategories() {
           style: BorderStyle.solid,
         ),
       ),
-      child: Text(categories[i],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+        child: Text(
+          categories[i],
           style: const TextStyle(
             color: Color.fromRGBO(49, 32, 73, 0.7),
             fontWeight: FontWeight.w400,
             fontSize: 17,
-          )),
+          ),
+        ),
+      ),
     ));
   }
   return categoryButtons;
@@ -58,11 +65,11 @@ List<OutlinedButton> getCategories() {
 
 //THE 3 MAIN TABS
 class Tabs {
-
   //SEARCH TAB
   static Widget searchTab() {
     return Column(
       children: [
+        //top welcome bar
         Container(
           color: const Color.fromRGBO(49, 32, 73, 1.0),
           constraints: const BoxConstraints.expand(height: 210),
@@ -117,75 +124,23 @@ class Tabs {
             ),
           ),
         ),
-        Container(
-          padding: const EdgeInsets.all(25),
-          margin: const EdgeInsets.only(top: 10),
-          child: TextFormField(
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color.fromRGBO(49, 32, 73, 1.0),
-            ),
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.search,
-                color: Color.fromRGBO(49, 32, 73, 0.7),
-              ),
-              hintText: "Αναζήτηση",
-              hintStyle: TextStyle(
-                color: Color.fromRGBO(49, 32, 73, 0.7),
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color.fromRGBO(255, 137, 0, 1.0),
-                    width: 2.0,
-                    style: BorderStyle.solid),
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(255, 137, 0, 1.0),
-                  width: 2.0,
-                  style: BorderStyle.solid,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  style: BorderStyle.solid,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-              ),
-            ),
-          ),
-        ),
+        //search field
+        Misc.searchBar(),
+        //category items
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: const Text(
-                      'Κατηγορίες Βιβλίων',
-                      style: TextStyle(
-                          color: Color.fromRGBO(49, 32, 73, 1.0),
-                          fontSize: 23,
-                          fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
+              Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
               Container(
                 margin: const EdgeInsets.only(top: 20),
-                child: Wrap(
-                  children: getCategories(),
-                  spacing: 10,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Wrap(
+                      children: getCategories(),
+                      spacing: 10,
+                      runSpacing: 2.5,
+                  ),
                 ),
               ),
             ],
@@ -196,12 +151,25 @@ class Tabs {
   }
 
   //TODO - LISTENING NOW TAB
-  static Widget listeningTab() {
-    return const Center(child: Text('this will be the player tab',));
+  static Widget libraryTab() {
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 40),
+            child: Misc.sectionTitle('Η Βιβλιοθήκη μου', MainAxisAlignment.center),
+          ),
+          Misc.searchBar(),
+        ],
+      ),
+    );
   }
 
   //TODO - LIBRARY TAB
-  static Widget libraryTab() {
-    return const Center(child: Text('this will be the library tab',));
+  static Widget listeningTab() {
+    return const Center(
+        child: Text(
+      'this will be the library tab',
+    ));
   }
 }
