@@ -1,77 +1,21 @@
 import 'dart:ui';
-import 'package:audioblink/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 
 import 'misc.dart';
+import 'main.dart';
 
-//LIST OF CATEGORIES
-List<OutlinedButton> getCategories() {
-  List<String> categories = [
-    'Λογοτεχνία',
-    'Ιστορία',
-    'Φιλοσοφία',
-    'Τέχνη',
-    'Επιστήμη',
-    'Πολιτική',
-    'Αρχαία Ελληνική Γραμματεία',
-    'Παιδικά',
-    'Θρησκεία',
-    'Κοινωνία',
-    'Βιογραφία',
-    'Διατροφή',
-    'Υγεία',
-    'Εκπαίδευση',
-    'Μαγειρική',
-    'Ποίηση',
-  ];
-
-  final categoryButtons = <OutlinedButton>[];
-  for (var i = 0; i < categories.length; i++) {
-    categoryButtons.add(OutlinedButton(
-      onPressed: (
-          //TODO add onPressed
-          ) {
-        debugPrint(categories[i]);
-      },
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        side: const BorderSide(
-          width: 2.0,
-          color: Color.fromRGBO(49, 32, 73, 1.0),
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: Text(
-          categories[i],
-          style: const TextStyle(
-            color: Color.fromRGBO(49, 32, 73, 0.7),
-            fontWeight: FontWeight.w400,
-            fontSize: 17,
-          ),
-        ),
-      ),
-    ));
-  }
-  return categoryButtons;
-}
-
-//THE 3 MAIN TABS
 class Tabs {
+
   //SEARCH TAB
   static Widget searchTab() {
     return Column(
       children: [
         //top welcome bar
         Container(
-          color: const Color.fromRGBO(49, 32, 73, 1.0),
+          color: myScheme.primary,
           constraints: const BoxConstraints.expand(height: 210),
           child: SafeArea(
             child: Row(
@@ -86,10 +30,10 @@ class Tabs {
                       Container(
                         margin: const EdgeInsets.only(bottom: 20),
                         padding: const EdgeInsets.only(right: 5),
-                        child: const Text(
+                        child: Text(
                           'Αναζήτησε ένα βιβλίο',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: myScheme.onPrimary,
                               fontSize: 15,
                               fontWeight: FontWeight.w200),
                           textAlign: TextAlign.left,
@@ -97,11 +41,12 @@ class Tabs {
                       ),
                       Container(
                         margin: const EdgeInsets.only(bottom: 10),
-                        child: const Text(
+                        child: Text(
                           'Καλωσήρθες,',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: myScheme.onPrimary,
                             fontSize: 28,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
@@ -134,12 +79,12 @@ class Tabs {
               Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
               Container(
                 margin: const EdgeInsets.only(top: 20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Wrap(
-                      children: getCategories(),
-                      spacing: 10,
-                      runSpacing: 2.5,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Wrap(
+                    children: Misc.getCategories(),
+                    spacing: 10,
+                    runSpacing: 2.5,
                   ),
                 ),
               ),
@@ -151,25 +96,41 @@ class Tabs {
   }
 
   //TODO - LISTENING NOW TAB
-  static Widget libraryTab() {
-    return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 40),
-            child: Misc.sectionTitle('Η Βιβλιοθήκη μου', MainAxisAlignment.center),
+  static Widget listeningTab() {
+    return Container(
+      color: myScheme.primary,
+      child: SafeArea(
+        child: Container(
+          color: myScheme.background,
+          child: const Center(
+            child: Text(
+              'this will be the library tab',
+            ),
           ),
-          Misc.searchBar(),
-        ],
+        ),
       ),
     );
   }
 
-  //TODO - LIBRARY TAB
-  static Widget listeningTab() {
-    return const Center(
-        child: Text(
-      'this will be the library tab',
-    ));
+  //LIBRARY TAB
+  static Widget libraryTab() {
+    return Container(
+      color: myScheme.primary,
+      child: SafeArea(
+        child: Container(
+          color: myScheme.background,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(top: 40),
+                child: Misc.sectionTitle(
+                    'Η Βιβλιοθήκη μου', MainAxisAlignment.center),
+              ),
+              Misc.searchBar(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

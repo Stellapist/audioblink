@@ -4,46 +4,102 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
+
+import 'main.dart';
 
 class Misc {
+
+  //CATEGORY BUTTONS
+  static List<OutlinedButton> getCategories() {
+    List<String> categories = [
+      'Λογοτεχνία',
+      'Ιστορία',
+      'Φιλοσοφία',
+      'Τέχνη',
+      'Επιστήμη',
+      'Πολιτική',
+      'Αρχαία Ελληνική Γραμματεία',
+      'Παιδικά',
+      'Θρησκεία',
+      'Κοινωνία',
+      'Βιογραφία',
+      'Διατροφή',
+      'Υγεία',
+      'Εκπαίδευση',
+      'Μαγειρική',
+      'Ποίηση',
+    ];
+
+    final categoryButtons = <OutlinedButton>[];
+    for (var i = 0; i < categories.length; i++) {
+      categoryButtons.add(OutlinedButton(
+        onPressed: (
+            //TODO add onPressed
+            ) {
+          debugPrint(categories[i]);
+        },
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          side: BorderSide(
+            color: myScheme.primary,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+          child: Text(
+            categories[i],
+            style: TextStyle(
+              color: myScheme.primaryVariant,
+              fontWeight: FontWeight.w400,
+              fontSize: 17,
+            ),
+          ),
+        ),
+      ));
+    }
+    return categoryButtons;
+  }
 
   //SEARCH BAR
   static Widget searchBar() {
     return Container(
       padding: const EdgeInsets.all(25),
       child: TextFormField(
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
-          color: Color.fromRGBO(49, 32, 73, 1.0),
+          color: myScheme.primary,
         ),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           prefixIcon: Icon(
             Icons.search,
-            color: Color.fromRGBO(49, 32, 73, 0.7),
+            color: myScheme.primaryVariant,
           ),
           hintText: "Αναζήτηση",
           hintStyle: TextStyle(
-            color: Color.fromRGBO(49, 32, 73, 0.7),
+            color: myScheme.primaryVariant,
             fontSize: 17,
             fontWeight: FontWeight.w400,
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromRGBO(255, 137, 0, 1.0),
+                color: myScheme.secondary,
                 width: 2.0,
                 style: BorderStyle.solid),
             borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Color.fromRGBO(255, 137, 0, 1.0),
+              color: myScheme.secondary,
               width: 2.0,
               style: BorderStyle.solid,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
           ),
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 2.0,
               style: BorderStyle.solid,
@@ -55,6 +111,7 @@ class Misc {
     );
   }
 
+  //SECTION TITLE
   static Widget sectionTitle(String title, MainAxisAlignment alignment) {
     return Row(
         mainAxisAlignment: alignment,
@@ -62,8 +119,8 @@ class Misc {
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Text(
             title,
-            style: const TextStyle(
-                color: Color.fromRGBO(49, 32, 73, 1.0),
+            style: TextStyle(
+                color: myScheme.primary,
                 fontSize: 24,
                 fontWeight: FontWeight.w600),
             textAlign: TextAlign.left,

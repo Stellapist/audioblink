@@ -1,13 +1,14 @@
 import 'dart:ui';
-import 'package:audioblink/tabs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
+import 'tabs.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Sf'),
+      theme: ThemeData(
+        fontFamily: 'Sf',
+        colorScheme: myScheme,
+      ),
       home: const MyStatefulWidget(),
     );
   }
@@ -40,8 +44,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     Tabs.listeningTab(),
     Tabs.libraryTab(),
   ];
-
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -69,10 +71,27 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: const Color.fromRGBO(255, 137, 0, 1.0),
-          unselectedItemColor: const Color.fromRGBO(49, 32, 73, 0.7),
+          selectedItemColor: myScheme.secondary,
+          unselectedItemColor: myScheme.primary,
           onTap: _onItemTapped,
         ),
     );
   }
 }
+
+const ColorScheme myScheme = ColorScheme(
+    primary: Color.fromRGBO(49, 32, 73, 1.0),
+    primaryVariant: Color.fromRGBO(49, 32, 73, 0.8),
+    secondary: Color.fromRGBO(255, 137, 0, 1.0),
+    secondaryVariant: Color.fromRGBO(255, 137, 0, 0.7),
+    surface: Color.fromRGBO(49, 32, 73, 1.0),
+    background: Colors.white,
+    error: Colors.redAccent,
+    onPrimary: Colors.white,
+    onSecondary:  Color.fromRGBO(49, 32, 73, 1.0),
+    onSurface: Colors.white,
+    onBackground: Color.fromRGBO(49, 32, 73, 0.8),
+    onError: Colors.white,
+    brightness: Brightness.light,
+);
+
