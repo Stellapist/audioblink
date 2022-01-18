@@ -81,7 +81,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
 const ColorScheme myScheme = ColorScheme(
     primary: Color.fromRGBO(49, 32, 73, 1.0),
-    primaryVariant: Color.fromRGBO(49, 32, 73, 0.8),
+    primaryVariant: Color.fromRGBO(49, 32, 73, 0.7),
     secondary: Color.fromRGBO(255, 137, 0, 1.0),
     secondaryVariant: Color.fromRGBO(255, 137, 0, 0.7),
     surface: Color.fromRGBO(49, 32, 73, 1.0),
