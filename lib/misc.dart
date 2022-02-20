@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:audioblink/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'main.dart';
 
 class Misc {
-
   //CATEGORY BUTTONS
   static List<OutlinedButton> getCategories() {
     List<String> categories = [
@@ -33,8 +33,7 @@ class Misc {
     final categoryButtons = <OutlinedButton>[];
     for (var i = 0; i < categories.length; i++) {
       categoryButtons.add(OutlinedButton(
-        onPressed: (
-            //TODO add onPressed
+        onPressed: (//TODO add onPressed
             ) {
           debugPrint(categories[i]);
         },
@@ -53,7 +52,7 @@ class Misc {
           child: Text(
             categories[i],
             style: TextStyle(
-              color: myScheme.primaryVariant,
+              color: myScheme.primaryContainer,
               fontWeight: FontWeight.w400,
               fontSize: 17,
             ),
@@ -75,12 +74,12 @@ class Misc {
         ),
         decoration: InputDecoration(
           prefixIcon: Icon(
-            Icons.search,
-            color: myScheme.primaryVariant,
+            Icons.search_rounded,
+            color: myScheme.primaryContainer,
           ),
           hintText: "Αναζήτηση",
           hintStyle: TextStyle(
-            color: myScheme.primaryVariant,
+            color: myScheme.primaryContainer,
             fontSize: 17,
             fontWeight: FontWeight.w400,
           ),
@@ -89,7 +88,7 @@ class Misc {
                 color: myScheme.secondary,
                 width: 2.0,
                 style: BorderStyle.solid),
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -114,8 +113,9 @@ class Misc {
   //SECTION TITLE
   static Widget sectionTitle(String title, MainAxisAlignment alignment) {
     return Row(
-        mainAxisAlignment: alignment,
-        children: [Container(
+      mainAxisAlignment: alignment,
+      children: [
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Text(
             title,
