@@ -263,7 +263,7 @@ class _PlayerTabState extends State<PlayerTab> {
       child: Column(children: [
         Container(
           padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
-          margin: const EdgeInsets.only(top: 20),
+          margin: const EdgeInsets.only(top: 30),
           child: DropdownButtonFormField(
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
@@ -312,7 +312,9 @@ class _PlayerTabState extends State<PlayerTab> {
             },
           ),
         ),
-        Misc.sectionTitle('Book Title', MainAxisAlignment.center),
+        Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Misc.sectionTitle('Book Title', MainAxisAlignment.center)),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 15),
           child: Text(
@@ -324,7 +326,7 @@ class _PlayerTabState extends State<PlayerTab> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 30),
+          margin: const EdgeInsets.symmetric(vertical: 40),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             IconButton(
               iconSize: 85,
@@ -350,8 +352,24 @@ class _PlayerTabState extends State<PlayerTab> {
           ]),
         ),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal:35, vertical: 25),
+            margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 25),
             child: _progressBar()),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: myScheme.primary, shape: BoxShape.circle),
+              child: _playSpeed(),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: myScheme.primary, shape: BoxShape.circle),
+              child: _playSpeed(),
+            ),
+          ],
+
+        ),
       ]),
     );
   }
@@ -369,24 +387,24 @@ class _PlayerTabState extends State<PlayerTab> {
             margin: const EdgeInsets.all(28.0),
             width: 70.0,
             height: 70.0,
-            child: CircularProgressIndicator(color: myScheme.background, strokeWidth: 6),
+            child: CircularProgressIndicator(
+                color: myScheme.background, strokeWidth: 6),
           );
-        }
-        else if (playing != true) {
+        } else if (playing != true) {
           return IconButton(
-            icon: Icon(Icons.play_arrow_rounded, color: myScheme.background,),
-            iconSize: 110.0,
-            onPressed: audioPlayer.play
-          );
-        }
-        else if (processingState != ProcessingState.completed) {
+              icon: Icon(
+                Icons.play_arrow_rounded,
+                color: myScheme.background,
+              ),
+              iconSize: 110.0,
+              onPressed: audioPlayer.play);
+        } else if (processingState != ProcessingState.completed) {
           return IconButton(
             icon: Icon(Icons.pause_rounded, color: myScheme.background),
             iconSize: 110.0,
             onPressed: audioPlayer.pause,
           );
-        }
-        else {
+        } else {
           return IconButton(
             icon: Icon(Icons.stop_rounded, color: myScheme.background),
             iconSize: 110.0,
@@ -427,9 +445,48 @@ class _PlayerTabState extends State<PlayerTab> {
           thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
           timeLabelLocation: _labelLocation,
           timeLabelType: _labelType,
-          timeLabelTextStyle: TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
+          timeLabelTextStyle:
+              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
           timeLabelPadding: _labelPadding,
         );
+      },
+    );
+  }
+
+  StreamBuilder<PlayerState> _playSpeed() {
+    return StreamBuilder<PlayerState>(
+      stream: audioPlayer.playerStateStream,
+      builder: (context, snapshot) {
+        final playerState = snapshot.data;
+        final processingState = playerState?.processingState;
+        final playing = playerState?.playing;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return Container(
+            margin: const EdgeInsets.all(8.0),
+            width: 40.0,
+            height: 40.0,
+            child: CircularProgressIndicator(
+                color: myScheme.background, strokeWidth: 6),
+          );
+        } else if (playing != true) {
+          return IconButton(
+              icon: const Text('1x'),
+              iconSize: 50.0,
+              onPressed: audioPlayer.play);
+        } else if (processingState != ProcessingState.completed) {
+          return IconButton(
+            icon: const Text('2x'),
+            iconSize: 50.0,
+            onPressed: audioPlayer.pause,
+          );
+        } else {
+          return IconButton(
+            icon: const Text('3x'),
+            iconSize: 50.0,
+            onPressed: () => audioPlayer.seek(Duration.zero),
+          );
+        }
       },
     );
   }
@@ -489,7 +546,7 @@ const ColorScheme myScheme = ColorScheme(
   error: Colors.redAccent,
   onPrimary: Colors.white,
   onSecondary: Color.fromRGBO(49, 32, 73, 1.0),
-  onSurface: Color.fromRGBO(255, 137, 0, 0.3),
+  onSurface: Color.fromRGBO(255, 137, 0, 0.25),
   onBackground: Color.fromRGBO(49, 32, 73, 0.8),
   onError: Colors.white,
   brightness: Brightness.light,
