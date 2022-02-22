@@ -1,11 +1,10 @@
 import 'dart:ui';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'misc.dart';
 
@@ -14,14 +13,9 @@ void main() {
 }
 
 //Content of the application
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -213,8 +207,6 @@ class PlayerTab extends StatefulWidget {
 }
 
 class _PlayerTabState extends State<PlayerTab> {
-  String dropdownValue = 'Κεφάλαιο 1';
-
   var chapters = [
     'Κεφάλαιο 1',
     'Κεφάλαιο 2',
@@ -223,21 +215,45 @@ class _PlayerTabState extends State<PlayerTab> {
     'Κεφάλαιο 5'
   ];
 
+  String dropdownValue = 'Κεφάλαιο 1';
   AudioPlayer audioPlayer = AudioPlayer();
-  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
-  AudioCache audioCache = AudioCache(fixedPlayer: null);
-  String path = 'audio/dummy.mp3';
+  String path = 'assets/audio/rick.mp3';
+  late Stream<DurationState> _durationState;
+  final _labelLocation = TimeLabelLocation.below;
+  final _labelType = TimeLabelType.totalTime;
+  final _thumbRadius = 8.0;
+  final _labelPadding = 5.0;
+  final _barHeight = 4.0;
+  final _barCapShape = BarCapShape.round;
+  final _thumbCanPaintOutsideBar = true;
 
   @override
   void initState() {
     super.initState();
-    //init in here might be a problem
-    audioCache = AudioCache(fixedPlayer: audioPlayer);
-    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
-      setState(() {
-        audioPlayerState = s;
-      });
-    });
+    audioPlayer = AudioPlayer();
+    _durationState = Rx.combineLatest2<Duration, PlaybackEvent, DurationState>(
+        audioPlayer.positionStream,
+        audioPlayer.playbackEventStream,
+        (position, playbackEvent) => DurationState(
+              progress: position,
+              buffered: playbackEvent.bufferedPosition,
+              total: playbackEvent.duration,
+            ));
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      await audioPlayer.setAsset(path);
+    } catch (e) {
+      debugPrint('An error occurred $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -321,18 +337,7 @@ class _PlayerTabState extends State<PlayerTab> {
             Container(
               decoration: BoxDecoration(
                   color: myScheme.primary, shape: BoxShape.circle),
-              child: IconButton(
-                iconSize: 110,
-                color: myScheme.background,
-                onPressed: () {
-                  audioPlayerState == AudioPlayerState.PLAYING
-                      ? pauseAudio()
-                      : playAudio();
-                },
-                icon: Icon(audioPlayerState == AudioPlayerState.PLAYING
-                    ? Icons.pause_rounded
-                    : Icons.play_arrow_rounded),
-              ),
+              child: _playButton(),
             ),
             IconButton(
               iconSize: 85,
@@ -344,37 +349,94 @@ class _PlayerTabState extends State<PlayerTab> {
             ),
           ]),
         ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal:35, vertical: 25),
+            child: _progressBar()),
       ]),
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    audioPlayer.release();
-    audioPlayer.dispose();
-    audioCache.clearCache();
+  StreamBuilder<PlayerState> _playButton() {
+    return StreamBuilder<PlayerState>(
+      stream: audioPlayer.playerStateStream,
+      builder: (context, snapshot) {
+        final playerState = snapshot.data;
+        final processingState = playerState?.processingState;
+        final playing = playerState?.playing;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return Container(
+            margin: const EdgeInsets.all(28.0),
+            width: 70.0,
+            height: 70.0,
+            child: CircularProgressIndicator(color: myScheme.background, strokeWidth: 6),
+          );
+        }
+        else if (playing != true) {
+          return IconButton(
+            icon: Icon(Icons.play_arrow_rounded, color: myScheme.background,),
+            iconSize: 110.0,
+            onPressed: audioPlayer.play
+          );
+        }
+        else if (processingState != ProcessingState.completed) {
+          return IconButton(
+            icon: Icon(Icons.pause_rounded, color: myScheme.background),
+            iconSize: 110.0,
+            onPressed: audioPlayer.pause,
+          );
+        }
+        else {
+          return IconButton(
+            icon: Icon(Icons.stop_rounded, color: myScheme.background),
+            iconSize: 110.0,
+            onPressed: () => audioPlayer.seek(Duration.zero),
+          );
+        }
+      },
+    );
   }
 
-  playAudio() async {
-    await audioCache.play(path);
+  StreamBuilder<DurationState> _progressBar() {
+    return StreamBuilder<DurationState>(
+      stream: _durationState,
+      builder: (context, snapshot) {
+        final durationState = snapshot.data;
+        final progress = durationState?.progress ?? Duration.zero;
+        final buffered = durationState?.buffered ?? Duration.zero;
+        final total = durationState?.total ?? Duration.zero;
+
+        return ProgressBar(
+          progress: progress,
+          buffered: buffered,
+          total: total,
+          onSeek: (duration) {
+            audioPlayer.seek(duration);
+          },
+          onDragUpdate: (details) {
+            debugPrint('${details.timeStamp}, ${details.localPosition}');
+          },
+          barHeight: _barHeight,
+          baseBarColor: myScheme.surface,
+          progressBarColor: myScheme.secondaryContainer,
+          bufferedBarColor: myScheme.onSurface,
+          thumbColor: myScheme.secondary,
+          thumbGlowColor: myScheme.secondary,
+          barCapShape: _barCapShape,
+          thumbRadius: _thumbRadius,
+          thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
+          timeLabelLocation: _labelLocation,
+          timeLabelType: _labelType,
+          timeLabelTextStyle: TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
+          timeLabelPadding: _labelPadding,
+        );
+      },
+    );
   }
 
-  pauseAudio() async {
-    await audioPlayer.pause();
-  }
+  previousTrack() {}
 
-  previousTrack() async {
-    //todo change this to playing previous chapter
-    audioPlayer.seek(const Duration(seconds: 0));
-    await audioCache.play(path);
-  }
-
-  nextTrack() async {
-    //todo change this to playing next chapter
-    audioPlayer.seek(const Duration(seconds: 0));
-    await audioCache.play(path);
-  }
+  nextTrack() {}
 }
 
 //Content of the LIBRARY tab
@@ -404,17 +466,30 @@ class _LibraryTabState extends State<LibraryTab> {
   }
 }
 
+//Misc
+class DurationState {
+  const DurationState({
+    required this.progress,
+    required this.buffered,
+    this.total,
+  });
+
+  final Duration progress;
+  final Duration buffered;
+  final Duration? total;
+}
+
 const ColorScheme myScheme = ColorScheme(
   primary: Color.fromRGBO(49, 32, 73, 1.0),
-  primaryContainer: Color.fromRGBO(49, 32, 73, 0.7),
+  primaryContainer: Color.fromRGBO(33, 24, 45, 0.7019607843137254),
   secondary: Color.fromRGBO(255, 137, 0, 1.0),
   secondaryContainer: Color.fromRGBO(255, 137, 0, 0.7),
-  surface: Color.fromRGBO(49, 32, 73, 1.0),
+  surface: Color.fromRGBO(194, 194, 194, 1.0),
   background: Colors.white,
   error: Colors.redAccent,
   onPrimary: Colors.white,
   onSecondary: Color.fromRGBO(49, 32, 73, 1.0),
-  onSurface: Colors.white,
+  onSurface: Color.fromRGBO(255, 137, 0, 0.3),
   onBackground: Color.fromRGBO(49, 32, 73, 0.8),
   onError: Colors.white,
   brightness: Brightness.light,
