@@ -1,9 +1,10 @@
-import 'dart:ui';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:duration_picker/duration_picker.dart';
 
 import 'misc.dart';
 
@@ -207,6 +208,12 @@ class PlayerTab extends StatefulWidget {
 }
 
 class _PlayerTabState extends State<PlayerTab> {
+  AudioPlayer audioPlayer = AudioPlayer();
+
+  Timer scheduleSleep(int mins) => Timer(Duration(minutes: mins), handleSleep);
+  Duration sleep = const Duration(hours: 0, minutes: 0);
+  int sleepInMins = 0;
+
   var chapters = [
     'Κεφάλαιο 1',
     'Κεφάλαιο 2',
@@ -214,16 +221,16 @@ class _PlayerTabState extends State<PlayerTab> {
     'Κεφάλαιο 4',
     'Κεφάλαιο 5'
   ];
+  String dropdownValue = 'Κεφάλαιο 1';
 
-  double firstSpeed = 1.0;
-  double secondSpeed = 1.5;
-  double thirdSpeed = 2.0;
-  double currentSpeed = 1.0;
+  double firstSpeed = 1.0,
+      secondSpeed = 1.5,
+      thirdSpeed = 2.0,
+      currentSpeed = 1.0;
   String currentIndication = '1x';
 
-  String dropdownValue = 'Κεφάλαιο 1';
-  AudioPlayer audioPlayer = AudioPlayer();
   String path = 'assets/audio/rick.mp3';
+
   late Stream<DurationState> _durationState;
   final _labelLocation = TimeLabelLocation.below;
   final _labelType = TimeLabelType.totalTime;
@@ -320,7 +327,7 @@ class _PlayerTabState extends State<PlayerTab> {
           ),
         ),
         Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             child: Misc.sectionTitle('Book Title', MainAxisAlignment.center)),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 15),
@@ -375,8 +382,22 @@ class _PlayerTabState extends State<PlayerTab> {
               child: IconButton(
                 iconSize: 50,
                 color: myScheme.background,
-                onPressed: () {
-                  sleep();
+                onPressed: () async {
+                  var resDur = await showDurationPicker(
+                    context: context,
+                    initialTime: const Duration(minutes: 30),
+                    baseUnit: BaseUnit.minute,
+                  );
+                  if (resDur != null) {
+                    scheduleSleep(resDur.inMinutes);
+                    int hr = resDur.inHours;
+                    int mins = (resDur.inMinutes - (hr * 60));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: hr > 0
+                            ? Text(
+                                'Sleep timer set for $hr hours and $mins minutes.')
+                            : Text('Sleep timer set for $mins minutes.')));
+                  }
                 },
                 icon: const Icon(Icons.bedtime_rounded),
               ),
@@ -494,11 +515,18 @@ class _PlayerTabState extends State<PlayerTab> {
     );
   }
 
-  sleep() {}
+  void previousTrack() {}
 
-  previousTrack() {}
+  void nextTrack() {}
 
-  nextTrack() {}
+  Future<void> handleSleep() async {
+    while (audioPlayer.volume > 0) {
+      audioPlayer.setVolume(audioPlayer.volume - 0.01);
+      await Future.delayed(const Duration(milliseconds: 30));
+    }
+    audioPlayer.pause();
+    audioPlayer.setVolume(1.0);
+  }
 }
 
 //Content of the LIBRARY tab
