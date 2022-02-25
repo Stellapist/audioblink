@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -42,6 +41,7 @@ class Tabs extends StatefulWidget {
 
 class _TabsState extends State<Tabs> {
   int _selectedIndex = 0;
+
   static final List<Widget> _widgetOptions = <Widget>[
     //Search Tab
     Container(
@@ -215,6 +215,11 @@ class _PlayerTabState extends State<PlayerTab> {
     'Κεφάλαιο 5'
   ];
 
+
+  double firstSpeed = 1.0;
+  double secondSpeed = 1.5;
+  double thirdSpeed = 2.0;
+
   String dropdownValue = 'Κεφάλαιο 1';
   AudioPlayer audioPlayer = AudioPlayer();
   String path = 'assets/audio/rick.mp3';
@@ -365,10 +370,16 @@ class _PlayerTabState extends State<PlayerTab> {
             Container(
               decoration: BoxDecoration(
                   color: myScheme.primary, shape: BoxShape.circle),
-              child: _playSpeed(),
+              child: IconButton(
+                iconSize: 50,
+                color: myScheme.background,
+                onPressed: () {
+                  sleep();
+                },
+                icon: const Icon(Icons.bedtime_rounded),
+              ),
             ),
           ],
-
         ),
       ]),
     );
@@ -457,43 +468,44 @@ class _PlayerTabState extends State<PlayerTab> {
     return StreamBuilder<PlayerState>(
       stream: audioPlayer.playerStateStream,
       builder: (context, snapshot) {
-        final playerState = snapshot.data;
-        final processingState = playerState?.processingState;
-        final playing = playerState?.playing;
-        if (processingState == ProcessingState.loading ||
-            processingState == ProcessingState.buffering) {
-          return Container(
-            margin: const EdgeInsets.all(8.0),
-            width: 40.0,
-            height: 40.0,
-            child: CircularProgressIndicator(
-                color: myScheme.background, strokeWidth: 6),
-          );
-        } else if (playing != true) {
+        if (audioPlayer.speed == 1.5) {
           return IconButton(
-              icon: const Text('1x'),
+              icon: Text('2x', style: timesStyle),
               iconSize: 50.0,
-              onPressed: audioPlayer.play);
-        } else if (processingState != ProcessingState.completed) {
-          return IconButton(
-            icon: const Text('2x'),
-            iconSize: 50.0,
-            onPressed: audioPlayer.pause,
-          );
-        } else {
-          return IconButton(
-            icon: const Text('3x'),
-            iconSize: 50.0,
-            onPressed: () => audioPlayer.seek(Duration.zero),
+              onPressed: () => {audioPlayer.setSpeed(thirdSpeed), audioPlayer.seek(audioPlayer.position)}
           );
         }
+        else if (audioPlayer.speed == 2.0) {
+          return IconButton(
+            icon: Text('3x', style: timesStyle),
+            iconSize: 50.0,
+            onPressed: () => {audioPlayer.setSpeed(firstSpeed), audioPlayer.seek(audioPlayer.position)}
+          );
+        }
+        else {
+          return IconButton(
+            icon: Text('1x', style: timesStyle),
+            iconSize: 50.0,
+            onPressed: () => {audioPlayer.setSpeed(secondSpeed), audioPlayer.seek(audioPlayer.position)}
+          );
+        }
+
       },
     );
   }
 
+  sleep() {}
+
   previousTrack() {}
 
   nextTrack() {}
+
+  TextStyle timesStyle = TextStyle(
+    color: myScheme.background,
+    fontWeight: FontWeight.w600,
+    fontSize: 30,
+  );
+
 }
 
 //Content of the LIBRARY tab
