@@ -215,10 +215,11 @@ class _PlayerTabState extends State<PlayerTab> {
     'Κεφάλαιο 5'
   ];
 
-
   double firstSpeed = 1.0;
   double secondSpeed = 1.5;
   double thirdSpeed = 2.0;
+  double currentSpeed = 1.0;
+  String currentIndication = '1x';
 
   String dropdownValue = 'Κεφάλαιο 1';
   AudioPlayer audioPlayer = AudioPlayer();
@@ -250,6 +251,7 @@ class _PlayerTabState extends State<PlayerTab> {
   Future<void> _init() async {
     try {
       await audioPlayer.setAsset(path);
+      audioPlayer.setSpeed(firstSpeed);
     } catch (e) {
       debugPrint('An error occurred $e');
     }
@@ -468,28 +470,26 @@ class _PlayerTabState extends State<PlayerTab> {
     return StreamBuilder<PlayerState>(
       stream: audioPlayer.playerStateStream,
       builder: (context, snapshot) {
-        if (audioPlayer.speed == 1.5) {
-          return IconButton(
-              icon: Text('2x', style: timesStyle),
-              iconSize: 50.0,
-              onPressed: () => {audioPlayer.setSpeed(thirdSpeed), audioPlayer.seek(audioPlayer.position)}
-          );
-        }
-        else if (audioPlayer.speed == 2.0) {
-          return IconButton(
-            icon: Text('3x', style: timesStyle),
+        return IconButton(
+            icon: Text(
+              currentIndication,
+              style: TextStyle(
+                color: myScheme.background,
+                fontWeight: FontWeight.w600,
+                fontSize: 30,
+              ),
+            ),
             iconSize: 50.0,
-            onPressed: () => {audioPlayer.setSpeed(firstSpeed), audioPlayer.seek(audioPlayer.position)}
-          );
-        }
-        else {
-          return IconButton(
-            icon: Text('1x', style: timesStyle),
-            iconSize: 50.0,
-            onPressed: () => {audioPlayer.setSpeed(secondSpeed), audioPlayer.seek(audioPlayer.position)}
-          );
-        }
-
+            onPressed: () => {
+                  if (audioPlayer.speed == thirdSpeed)
+                    {currentSpeed = firstSpeed, currentIndication = '1x'}
+                  else if (audioPlayer.speed == secondSpeed)
+                    {currentSpeed = thirdSpeed, currentIndication = '3x'}
+                  else
+                    {currentSpeed = secondSpeed, currentIndication = '2x'},
+                  audioPlayer.setSpeed(currentSpeed),
+                  audioPlayer.seek(audioPlayer.position)
+                });
       },
     );
   }
@@ -499,13 +499,6 @@ class _PlayerTabState extends State<PlayerTab> {
   previousTrack() {}
 
   nextTrack() {}
-
-  TextStyle timesStyle = TextStyle(
-    color: myScheme.background,
-    fontWeight: FontWeight.w600,
-    fontSize: 30,
-  );
-
 }
 
 //Content of the LIBRARY tab
