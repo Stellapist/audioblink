@@ -76,6 +76,7 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: myScheme.background,
@@ -111,91 +112,242 @@ class SearchTab extends StatefulWidget {
 }
 
 class _SearchTabState extends State<SearchTab> {
+  String selectedCategory = '';
+  String? searchItem = '';
+  List<String> categories = [
+    'Λογοτεχνία',
+    'Ιστορία',
+    'Φιλοσοφία',
+    'Τέχνη',
+    'Επιστήμη',
+    'Πολιτική',
+    'Αρχαία Ελληνική Γραμματεία',
+    'Παιδικά',
+    'Θρησκεία',
+    'Κοινωνία',
+    'Βιογραφία',
+    'Διατροφή',
+    'Υγεία',
+    'Εκπαίδευση',
+    'Μαγειρική',
+    'Ποίηση',
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: myScheme.background,
-      child: Column(
-        children: [
-          //top welcome bar
-          Container(
-            color: myScheme.primary,
-            child: Row(
-              children: [
-                Container(
-                  width: 200,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 5, 20),
-                  child: Column(
-                    verticalDirection: VerticalDirection.up,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Text(
-                          'Αναζήτησε ένα βιβλίο',
-                          style: TextStyle(
-                              color: myScheme.onPrimary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w200),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'Καλωσήρθες,',
-                          style: TextStyle(
-                            color: myScheme.onPrimary,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w400,
+    return _handleSearch();
+  }
+
+  Widget _handleSearch() {
+    if (searchItem == '' && selectedCategory == '') {
+      return Container(
+        color: myScheme.background,
+        child: Column(
+          children: [
+            //top welcome bar
+            Container(
+              color: myScheme.primary,
+              child: Row(
+                children: [
+                  Container(
+                    width: 200,
+                    padding: const EdgeInsets.fromLTRB(20, 0, 5, 20),
+                    child: Column(
+                      verticalDirection: VerticalDirection.up,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 20),
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Text(
+                            'Αναζήτησε ένα βιβλίο',
+                            style: TextStyle(
+                                color: myScheme.onPrimary,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200),
+                            textAlign: TextAlign.left,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 42),
-                  width: 110,
-                  child: Column(
-                    children: const [
-                      Image(
-                        image: AssetImage('assets/images/landing_page.png'),
-                      ),
-                    ],
-                    verticalDirection: VerticalDirection.up,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          //search field
-          Misc.searchBar(),
-          //category items
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                Misc.sectionTitle(
-                    'Κατηγοριες Βιβλίων', MainAxisAlignment.start),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Wrap(
-                      children: Misc.getCategories(),
-                      spacing: 10,
-                      runSpacing: 2.5,
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            'Καλωσήρθες,',
+                            style: TextStyle(
+                              color: myScheme.onPrimary,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(left: 42),
+                    width: 110,
+                    child: Column(
+                      children: const [
+                        Image(
+                          image: AssetImage('assets/images/landing_page.png'),
+                        ),
+                      ],
+                      verticalDirection: VerticalDirection.up,
+                    ),
+                  ),
+                ],
+              ),
             ),
+            //search field
+            searchBar(),
+            //category items
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                children: [
+                  Misc.sectionTitle(
+                      'Κατηγοριες Βιβλίων', MainAxisAlignment.start),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Wrap(
+                        children: categoryButtons(),
+                        spacing: 10,
+                        runSpacing: 2.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        color: myScheme.background,
+        child: Column(
+          children: [
+            //search title
+            Container(
+              padding: const EdgeInsets.only(top: 30),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                IconButton(
+                  color: myScheme.primary,
+                    padding: const EdgeInsets.only(left: 20),
+                    iconSize: 35,
+                    onPressed: () {
+                      setState(() {
+                        searchItem = '';
+                        selectedCategory = '';
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_back)),
+                Expanded(
+                  child: Container(
+                    transform: Matrix4.translationValues(-27.5, 0.0, 0.0),
+                    child: Misc.sectionTitle(
+                        selectedCategory == '' ? 'Αναζήτηση' : selectedCategory,
+                        MainAxisAlignment.center),
+                  ),
+                ),
+              ]),
+            ),
+            //search field
+            searchBar(),
+            Text(searchItem.toString()),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget searchBar() {
+    return Container(
+      padding: const EdgeInsets.all(25),
+      child: TextFormField(
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: myScheme.primary,
+        ),
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: myScheme.primaryContainer,
           ),
-        ],
+          hintText: "Αναζήτηση",
+          hintStyle: TextStyle(
+            color: myScheme.primaryContainer,
+            fontSize: 17,
+            fontWeight: FontWeight.w400,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: myScheme.secondary,
+                width: 2.0,
+                style: BorderStyle.solid),
+            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: myScheme.secondary,
+              width: 2.0,
+              style: BorderStyle.solid,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          ),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2.0,
+              style: BorderStyle.solid,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          ),
+        ),
+        onChanged: (String? val) {
+          setState(() {
+            searchItem = val;
+          });
+        },
       ),
     );
+  }
+
+  List<OutlinedButton> categoryButtons() {
+    List<OutlinedButton> categoryButtons = <OutlinedButton>[];
+    for (var i = 0; i < categories.length; i++) {
+      categoryButtons.add(OutlinedButton(
+        onPressed: () {
+          setState(() {
+            selectedCategory = categories[i];
+          });
+        },
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          side: BorderSide(
+            color: myScheme.primary,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+          child: Text(
+            categories[i],
+            style: TextStyle(
+              color: myScheme.primaryContainer,
+              fontWeight: FontWeight.w400,
+              fontSize: 17,
+            ),
+          ),
+        ),
+      ));
+    }
+    return categoryButtons;
   }
 }
 
@@ -522,7 +674,7 @@ class _PlayerTabState extends State<PlayerTab> {
   Future<void> handleSleep() async {
     while (audioPlayer.volume > 0) {
       audioPlayer.setVolume(audioPlayer.volume - 0.01);
-      await Future.delayed(const Duration(milliseconds: 30));
+      await Future.delayed(const Duration(milliseconds: 25));
     }
     audioPlayer.pause();
     audioPlayer.setVolume(1.0);
@@ -549,7 +701,49 @@ class _LibraryTabState extends State<LibraryTab> {
             child:
                 Misc.sectionTitle('Η Βιβλιοθήκη μου', MainAxisAlignment.center),
           ),
-          Misc.searchBar(),
+          Container(
+            padding: const EdgeInsets.all(25),
+            child: TextFormField(
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: myScheme.primary,
+              ),
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: myScheme.primaryContainer,
+                ),
+                hintText: "Αναζήτηση",
+                hintStyle: TextStyle(
+                  color: myScheme.primaryContainer,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: myScheme.secondary,
+                      width: 2.0,
+                      style: BorderStyle.solid),
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: myScheme.secondary,
+                    width: 2.0,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                ),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
