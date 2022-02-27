@@ -153,7 +153,7 @@ class _SearchTabState extends State<SearchTab> {
                     children: [
                       Container(
                         width: 200,
-                        padding: const EdgeInsets.fromLTRB(20, 0, 5, 20),
+                        padding: const EdgeInsets.fromLTRB(20, 45, 5, 20),
                         child: Column(
                           verticalDirection: VerticalDirection.up,
                           crossAxisAlignment: CrossAxisAlignment.end,
