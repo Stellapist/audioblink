@@ -121,7 +121,7 @@ class _SearchTabState extends State<SearchTab> {
     'Τέχνη',
     'Επιστήμη',
     'Πολιτική',
-    'Αρχαία Ελληνική Γραμματεία',
+    'Αρχαία Γραμματεία',
     'Παιδικά',
     'Θρησκεία',
     'Κοινωνία',
@@ -133,141 +133,147 @@ class _SearchTabState extends State<SearchTab> {
     'Ποίηση',
   ];
 
+  final _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return _handleSearch();
   }
 
   Widget _handleSearch() {
-    if (searchItem == '' && selectedCategory == '') {
-      return Container(
-        color: myScheme.background,
-        child: Column(
-          children: [
-            //top welcome bar
-            Container(
-              color: myScheme.primary,
-              child: Row(
-                children: [
-                  Container(
-                    width: 200,
-                    padding: const EdgeInsets.fromLTRB(20, 0, 5, 20),
-                    child: Column(
-                      verticalDirection: VerticalDirection.up,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 20),
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Text(
-                            'Αναζήτησε ένα βιβλίο',
-                            style: TextStyle(
-                                color: myScheme.onPrimary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w200),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            'Καλωσήρθες,',
-                            style: TextStyle(
-                              color: myScheme.onPrimary,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w400,
+    return Container(
+      color: myScheme.background,
+      child: Column(
+        children: [
+          //top welcome bar
+          searchItem == '' && selectedCategory == ''
+              ? Container(
+                  color: myScheme.primary,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 200,
+                        padding: const EdgeInsets.fromLTRB(20, 0, 5, 20),
+                        child: Column(
+                          verticalDirection: VerticalDirection.up,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Text(
+                                'Αναζήτησε ένα βιβλίο',
+                                style: TextStyle(
+                                    color: myScheme.onPrimary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w200),
+                                textAlign: TextAlign.left,
+                              ),
                             ),
-                          ),
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: Text(
+                                'Καλωσήρθες,',
+                                style: TextStyle(
+                                  color: myScheme.onPrimary,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 42),
-                    width: 110,
-                    child: Column(
-                      children: const [
-                        Image(
-                          image: AssetImage('assets/images/landing_page.png'),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 42),
+                        width: 110,
+                        child: Column(
+                          children: const [
+                            Image(
+                              image:
+                                  AssetImage('assets/images/landing_page.png'),
+                            ),
+                          ],
+                          verticalDirection: VerticalDirection.up,
                         ),
-                      ],
-                      verticalDirection: VerticalDirection.up,
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            //search field
-            searchBar(),
-            //category items
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                children: [
-                  Misc.sectionTitle(
-                      'Κατηγοριες Βιβλίων', MainAxisAlignment.start),
+                )
+              : Stack(
+              children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Wrap(
-                        children: categoryButtons(),
-                        spacing: 10,
-                        runSpacing: 2.5,
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Misc.sectionTitle(
+                        selectedCategory,
+                        MainAxisAlignment.center),
+                  ),
+                  Positioned(
+                    top: 30,
+                    left: 10,
+                    child: Container(
+                      transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+                      child: IconButton(
+                        color: myScheme.primary,
+                        iconSize: 35,
+                        onPressed: () {
+                          setState(() {
+                            searchItem = '';
+                            selectedCategory = '';
+                            _controller.clear();
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_back),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Container(
-        color: myScheme.background,
-        child: Column(
-          children: [
-            //search title
-            Container(
-              padding: const EdgeInsets.only(top: 30),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                IconButton(
-                  color: myScheme.primary,
-                    padding: const EdgeInsets.only(left: 20),
-                    iconSize: 35,
-                    onPressed: () {
-                      setState(() {
-                        searchItem = '';
-                        selectedCategory = '';
-                      });
-                    },
-                    icon: const Icon(Icons.arrow_back)),
-                Expanded(
-                  child: Container(
-                    transform: Matrix4.translationValues(-27.5, 0.0, 0.0),
-                    child: Misc.sectionTitle(
-                        selectedCategory == '' ? 'Αναζήτηση' : selectedCategory,
-                        MainAxisAlignment.center),
+                ]),
+          //search field
+          searchBar(),
+          //category items
+          searchItem == '' && selectedCategory == ''
+              ? Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Column(
+                    children: [
+                      Misc.sectionTitle(
+                          'Κατηγοριες Βιβλίων', MainAxisAlignment.start),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Wrap(
+                            children: categoryButtons(),
+                            spacing: 10,
+                            runSpacing: 2.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(
+                  color: myScheme.background,
+                  child: Column(
+                    children: [
+                      //search title
+                      //search field
+                      Text(searchItem.toString())
+                    ],
                   ),
                 ),
-              ]),
-            ),
-            //search field
-            searchBar(),
-            Text(searchItem.toString()),
-          ],
-        ),
-      );
-    }
+        ],
+      ),
+    );
   }
 
   Widget searchBar() {
     return Container(
       padding: const EdgeInsets.all(25),
       child: TextFormField(
+        controller: _controller,
         style: TextStyle(
           fontWeight: FontWeight.w600,
           color: myScheme.primary,
@@ -309,6 +315,7 @@ class _SearchTabState extends State<SearchTab> {
         onChanged: (String? val) {
           setState(() {
             searchItem = val;
+            selectedCategory = 'Αναζήτηση';
           });
         },
       ),
@@ -660,8 +667,9 @@ class _PlayerTabState extends State<PlayerTab> {
                     {currentSpeed = thirdSpeed, currentIndication = '3x'}
                   else
                     {currentSpeed = secondSpeed, currentIndication = '2x'},
-                  audioPlayer.setSpeed(currentSpeed),
-                  audioPlayer.seek(audioPlayer.position)
+                  setState(() {
+                    audioPlayer.setSpeed(currentSpeed);
+                  })
                 });
       },
     );
