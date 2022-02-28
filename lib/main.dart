@@ -200,13 +200,11 @@ class _SearchTabState extends State<SearchTab> {
                     ],
                   ),
                 )
-              : Stack(
-              children: [
+              : Stack(children: [
                   Container(
                     padding: const EdgeInsets.only(top: 40),
                     child: Misc.sectionTitle(
-                        selectedCategory,
-                        MainAxisAlignment.center),
+                        selectedCategory, MainAxisAlignment.center),
                   ),
                   Positioned(
                     top: 30,
@@ -368,9 +366,11 @@ class PlayerTab extends StatefulWidget {
 
 class _PlayerTabState extends State<PlayerTab> {
   AudioPlayer audioPlayer = AudioPlayer();
+  int hr = 0, mins = 0, secs = 0;
+  int sleep = 0;
 
-  Timer scheduleSleep(int mins) => Timer(Duration(minutes: mins), handleSleep);
-  Duration sleep = const Duration(hours: 0, minutes: 0);
+  late Timer showMessage;
+
   int sleepInMins = 0;
 
   var chapters = [
@@ -433,135 +433,196 @@ class _PlayerTabState extends State<PlayerTab> {
   Widget build(BuildContext context) {
     return Container(
       color: myScheme.background,
-      child: Column(children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
-          margin: const EdgeInsets.only(top: 30),
-          child: DropdownButtonFormField(
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+      child: Stack(children: [
+        Column(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
+            margin: const EdgeInsets.only(top: 30),
+            child: DropdownButtonFormField(
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: myScheme.secondary,
+                      width: 2.0,
+                      style: BorderStyle.solid),
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
                     color: myScheme.secondary,
                     width: 2.0,
-                    style: BorderStyle.solid),
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: myScheme.secondary,
-                  width: 2.0,
-                  style: BorderStyle.solid,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-              ),
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  style: BorderStyle.solid,
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
               ),
-            ),
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w400,
-              color: myScheme.primaryContainer,
-            ),
-            value: dropdownValue,
-            icon: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: myScheme.primaryContainer,
-            ),
-            items: chapters.map((String chapters) {
-              return DropdownMenuItem(
-                value: chapters,
-                child: Text(chapters),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                dropdownValue = newValue!;
-              });
-            },
-          ),
-        ),
-        Container(
-            margin: const EdgeInsets.only(top: 10),
-            child: Misc.sectionTitle('Book Title', MainAxisAlignment.center)),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 15),
-          child: Text(
-            'Book Author',
-            style: TextStyle(
+              style: TextStyle(
                 fontSize: 17,
-                fontWeight: FontWeight.w200,
-                color: myScheme.primary),
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 40),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            IconButton(
-              iconSize: 85,
-              color: myScheme.secondary,
-              onPressed: () {
-                previousTrack();
-              },
-              icon: const Icon(Icons.skip_previous_rounded),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: myScheme.primary, shape: BoxShape.circle),
-              child: _playButton(),
-            ),
-            IconButton(
-              iconSize: 85,
-              color: myScheme.secondary,
-              onPressed: () {
-                nextTrack();
-              },
-              icon: const Icon(Icons.skip_next_rounded),
-            ),
-          ]),
-        ),
-        Container(
-            margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 25),
-            child: _progressBar()),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: myScheme.primary, shape: BoxShape.circle),
-              child: _playSpeed(),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: myScheme.primary, shape: BoxShape.circle),
-              child: IconButton(
-                iconSize: 50,
-                color: myScheme.background,
-                onPressed: () async {
-                  var resDur = await showDurationPicker(
-                    context: context,
-                    initialTime: const Duration(minutes: 30),
-                    baseUnit: BaseUnit.minute,
-                  );
-                  if (resDur != null) {
-                    scheduleSleep(resDur.inMinutes);
-                    int hr = resDur.inHours;
-                    int mins = (resDur.inMinutes - (hr * 60));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: hr > 0
-                            ? Text(
-                                'Sleep timer set for $hr hours and $mins minutes.')
-                            : Text('Sleep timer set for $mins minutes.')));
-                  }
-                },
-                icon: const Icon(Icons.bedtime_rounded),
+                fontWeight: FontWeight.w400,
+                color: myScheme.primaryContainer,
               ),
+              value: dropdownValue,
+              icon: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: myScheme.primaryContainer,
+              ),
+              items: chapters.map((String chapters) {
+                return DropdownMenuItem(
+                  value: chapters,
+                  child: Text(chapters),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
             ),
-          ],
+          ),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Misc.sectionTitle('Book Title', MainAxisAlignment.center)),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 15),
+            child: Text(
+              'Book Author',
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w200,
+                  color: myScheme.primary),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 40),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              IconButton(
+                iconSize: 85,
+                color: myScheme.secondary,
+                onPressed: () {
+                  previousTrack();
+                },
+                icon: const Icon(Icons.skip_previous_rounded),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: myScheme.primary, shape: BoxShape.circle),
+                child: _playButton(),
+              ),
+              IconButton(
+                iconSize: 85,
+                color: myScheme.secondary,
+                onPressed: () {
+                  nextTrack();
+                },
+                icon: const Icon(Icons.skip_next_rounded),
+              ),
+            ]),
+          ),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 25),
+              child: _progressBar()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: myScheme.primary, shape: BoxShape.circle),
+                child: _playSpeed(),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: myScheme.primary, shape: BoxShape.circle),
+                child: IconButton(
+                  iconSize: 50,
+                  color: myScheme.background,
+                  onPressed: () async {
+                    if (sleep == 0) {
+                      var resDur = await showDurationPicker(
+                        context: context,
+                        initialTime: const Duration(minutes: 30),
+                        baseUnit: BaseUnit.minute,
+                      );
+                      if (resDur != null) {
+                        setState(() {
+                          sleep = -1;
+                        });
+                        int hr = resDur.inHours;
+                        int mins = (resDur.inMinutes - (hr * 60));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: hr > 0
+                              ? Text(
+                                  'Sleep timer set for $hr hours and $mins minutes.',
+                                  style: TextStyle(
+                                      color: myScheme.background, fontSize: 15),
+                                )
+                              : Text(
+                                  'Sleep timer set for $mins minutes.',
+                                  style: TextStyle(
+                                      color: myScheme.background, fontSize: 15),
+                                ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: myScheme.primary,
+                        ));
+                        sleep = resDur.inSeconds;
+                        startTimer();
+                      } else {
+                        showMessage.cancel();
+                      }
+                    } else {
+                      setState(() {
+                        sleep = 0;
+                        (showMessage.cancel());
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          'Timer cancelled.',
+                          style: TextStyle(
+                              color: myScheme.background, fontSize: 15),
+                        ),
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: myScheme.primary,
+                      ));
+                    }
+                  },
+                  icon: sleep != 0
+                      ? const Icon(Icons.close_rounded)
+                      : const Icon(Icons.bedtime_rounded),
+                ),
+              ),
+            ],
+          ),
+        ]),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 14),
+            color: sleep > 0 ? myScheme.secondary : myScheme.background,
+            child: hr > 0
+                ? Text(
+                    'Sleep timer ends in $hr hours, $mins minutes and $secs seconds.',
+                    style: TextStyle(color: myScheme.background, fontSize: 15),
+                  )
+                : mins > 0
+                    ? Text(
+                        'Sleep timer ends in $mins minutes and $secs seconds.',
+                        style:
+                            TextStyle(color: myScheme.background, fontSize: 15),
+                      )
+                    : Text(
+                        'Sleep timer ends in $secs seconds.',
+                        style:
+                            TextStyle(color: myScheme.background, fontSize: 15),
+                      ),
+          ),
         ),
       ]),
     );
@@ -678,6 +739,22 @@ class _PlayerTabState extends State<PlayerTab> {
   void previousTrack() {}
 
   void nextTrack() {}
+
+  void startTimer() {
+    showMessage = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (sleep > 0) {
+          hr = sleep ~/ 3600;
+          mins = (sleep ~/ 60 - (hr * 60));
+          secs = (sleep - ((hr * 3600) + (mins * 60)));
+          sleep--;
+        } else {
+          handleSleep();
+          showMessage.cancel();
+        }
+      });
+    });
+  }
 
   Future<void> handleSleep() async {
     while (audioPlayer.volume > 0) {
