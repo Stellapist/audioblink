@@ -222,23 +222,7 @@ class _SearchTabState extends State<SearchTab> {
               ? Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Column(
-                    children: [
-                      Misc.sectionTitle(
-                          'Κατηγοριες Βιβλίων', MainAxisAlignment.start),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Wrap(
-                            children: categoryButtons(),
-                            spacing: 10,
-                            runSpacing: 2.5,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: getCategoryButtons(),
                 )
               : Container(
                   color: myScheme.background,
@@ -308,33 +292,59 @@ class _SearchTabState extends State<SearchTab> {
     );
   }
 
-  List<OutlinedButton> categoryButtons() {
-    List<OutlinedButton> categoryButtons = <OutlinedButton>[];
-    for (var i = 0; i < categories.length; i++) {
-      categoryButtons.add(OutlinedButton(
-        onPressed: () {
-          setState(() {
-            selectedCategory = categories[i];
-          });
-        },
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          side: BorderSide(
-            color: myScheme.primary,
-            width: 2.0,
-            style: BorderStyle.solid,
+  Widget getCategoryButtons() {
+    return Column(
+      children: [
+        Container(
+          child:
+              Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
+          margin: const EdgeInsets.only(bottom: 20),
+        ),
+        ConstrainedBox(
+          //TODO: FIX BELOW TO DYNAMIC HEIGHT
+          constraints: const BoxConstraints(maxHeight: 400),
+          child: ListView.builder(
+            itemCount: categoryButtons().length,
+            itemBuilder: (BuildContext context, int index) {
+              return categoryButtons().elementAt(index);
+            },
           ),
         ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-          child: Text(
-            categories[i],
-            style: TextStyle(
-              color: myScheme.primaryContainer,
-              fontWeight: FontWeight.w400,
-              fontSize: 17,
+      ],
+    );
+  }
+
+  List<Widget> categoryButtons() {
+    List<Widget> categoryButtons = <Widget>[];
+    for (var i = 0; i < categories.length; i++) {
+      categoryButtons.add(Container(
+        padding: const EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        child: OutlinedButton(
+          onPressed: () {
+            setState(() {
+              selectedCategory = categories[i];
+            });
+          },
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            side: BorderSide(
+              color: myScheme.primary,
+              width: 2.0,
+              style: BorderStyle.solid,
+            ),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+            child: Text(
+              categories[i],
+              style: TextStyle(
+                color: myScheme.primaryContainer,
+                fontWeight: FontWeight.w400,
+                fontSize: 24,
+              ),
             ),
           ),
         ),
@@ -512,8 +522,7 @@ class _PlayerTabState extends State<PlayerTab> {
                   nextTrack();
                 },
                 icon: const Tooltip(
-                    message: "next",
-                    child: Icon(Icons.skip_next_rounded)),
+                    message: "next", child: Icon(Icons.skip_next_rounded)),
               ),
             ]),
           ),
@@ -585,11 +594,10 @@ class _PlayerTabState extends State<PlayerTab> {
                   },
                   icon: sleep != 0
                       ? const Tooltip(
-                      message: "cancel timer",
-                      child: Icon(Icons.close_rounded))
+                          message: "cancel timer",
+                          child: Icon(Icons.close_rounded))
                       : const Tooltip(
-                      message: "timer",
-                      child: Icon(Icons.bedtime_rounded)),
+                          message: "timer", child: Icon(Icons.bedtime_rounded)),
                 ),
               ),
             ],
@@ -647,7 +655,6 @@ class _PlayerTabState extends State<PlayerTab> {
                 child: Icon(
                   Icons.play_arrow_rounded,
                   color: myScheme.background,
-
                 ),
               ),
               iconSize: 110.0,
@@ -683,29 +690,29 @@ class _PlayerTabState extends State<PlayerTab> {
         final total = durationState?.total ?? Duration.zero;
 
         return ProgressBar(
-            progress: progress,
-            buffered: buffered,
-            total: total,
-            onSeek: (duration) {
-              audioPlayer.seek(duration);
-            },
-            onDragUpdate: (details) {
-              debugPrint('${details.timeStamp}, ${details.localPosition}');
-            },
-            barHeight: _barHeight,
-            baseBarColor: myScheme.surface,
-            progressBarColor: myScheme.secondaryContainer,
-            bufferedBarColor: myScheme.onSurface,
-            thumbColor: myScheme.secondary,
-            thumbGlowColor: myScheme.secondary,
-            barCapShape: _barCapShape,
-            thumbRadius: _thumbRadius,
-            thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
-            timeLabelLocation: _labelLocation,
-            timeLabelType: _labelType,
-            timeLabelTextStyle:
-                TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
-            timeLabelPadding: _labelPadding,
+          progress: progress,
+          buffered: buffered,
+          total: total,
+          onSeek: (duration) {
+            audioPlayer.seek(duration);
+          },
+          onDragUpdate: (details) {
+            debugPrint('${details.timeStamp}, ${details.localPosition}');
+          },
+          barHeight: _barHeight,
+          baseBarColor: myScheme.surface,
+          progressBarColor: myScheme.secondaryContainer,
+          bufferedBarColor: myScheme.onSurface,
+          thumbColor: myScheme.secondary,
+          thumbGlowColor: myScheme.secondary,
+          barCapShape: _barCapShape,
+          thumbRadius: _thumbRadius,
+          thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
+          timeLabelLocation: _labelLocation,
+          timeLabelType: _labelType,
+          timeLabelTextStyle:
+              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
+          timeLabelPadding: _labelPadding,
         );
       },
     );
