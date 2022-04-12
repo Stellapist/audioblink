@@ -159,18 +159,6 @@ class _SearchTabState extends State<SearchTab> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(bottom: 20),
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Text(
-                                'Αναζήτησε ένα βιβλίο',
-                                style: TextStyle(
-                                    color: myScheme.onPrimary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               child: Text(
                                 'Καλωσήρθες,',
@@ -508,7 +496,9 @@ class _PlayerTabState extends State<PlayerTab> {
                 onPressed: () {
                   previousTrack();
                 },
-                icon: const Icon(Icons.skip_previous_rounded),
+                icon: const Tooltip(
+                    message: "previous",
+                    child: Icon(Icons.skip_previous_rounded)),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -521,7 +511,9 @@ class _PlayerTabState extends State<PlayerTab> {
                 onPressed: () {
                   nextTrack();
                 },
-                icon: const Icon(Icons.skip_next_rounded),
+                icon: const Tooltip(
+                    message: "next",
+                    child: Icon(Icons.skip_next_rounded)),
               ),
             ]),
           ),
@@ -592,8 +584,12 @@ class _PlayerTabState extends State<PlayerTab> {
                     }
                   },
                   icon: sleep != 0
-                      ? const Icon(Icons.close_rounded)
-                      : const Icon(Icons.bedtime_rounded),
+                      ? const Tooltip(
+                      message: "cancel timer",
+                      child: Icon(Icons.close_rounded))
+                      : const Tooltip(
+                      message: "timer",
+                      child: Icon(Icons.bedtime_rounded)),
                 ),
               ),
             ],
@@ -646,21 +642,29 @@ class _PlayerTabState extends State<PlayerTab> {
           );
         } else if (playing != true) {
           return IconButton(
-              icon: Icon(
-                Icons.play_arrow_rounded,
-                color: myScheme.background,
+              icon: Tooltip(
+                message: "play",
+                child: Icon(
+                  Icons.play_arrow_rounded,
+                  color: myScheme.background,
+
+                ),
               ),
               iconSize: 110.0,
               onPressed: audioPlayer.play);
         } else if (processingState != ProcessingState.completed) {
           return IconButton(
-            icon: Icon(Icons.pause_rounded, color: myScheme.background),
+            icon: Tooltip(
+                message: "pause",
+                child: Icon(Icons.pause_rounded, color: myScheme.background)),
             iconSize: 110.0,
             onPressed: audioPlayer.pause,
           );
         } else {
           return IconButton(
-            icon: Icon(Icons.stop_rounded, color: myScheme.background),
+            icon: Tooltip(
+                message: "stop",
+                child: Icon(Icons.stop_rounded, color: myScheme.background)),
             iconSize: 110.0,
             onPressed: () => audioPlayer.seek(Duration.zero),
           );
@@ -679,29 +683,29 @@ class _PlayerTabState extends State<PlayerTab> {
         final total = durationState?.total ?? Duration.zero;
 
         return ProgressBar(
-          progress: progress,
-          buffered: buffered,
-          total: total,
-          onSeek: (duration) {
-            audioPlayer.seek(duration);
-          },
-          onDragUpdate: (details) {
-            debugPrint('${details.timeStamp}, ${details.localPosition}');
-          },
-          barHeight: _barHeight,
-          baseBarColor: myScheme.surface,
-          progressBarColor: myScheme.secondaryContainer,
-          bufferedBarColor: myScheme.onSurface,
-          thumbColor: myScheme.secondary,
-          thumbGlowColor: myScheme.secondary,
-          barCapShape: _barCapShape,
-          thumbRadius: _thumbRadius,
-          thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
-          timeLabelLocation: _labelLocation,
-          timeLabelType: _labelType,
-          timeLabelTextStyle:
-              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
-          timeLabelPadding: _labelPadding,
+            progress: progress,
+            buffered: buffered,
+            total: total,
+            onSeek: (duration) {
+              audioPlayer.seek(duration);
+            },
+            onDragUpdate: (details) {
+              debugPrint('${details.timeStamp}, ${details.localPosition}');
+            },
+            barHeight: _barHeight,
+            baseBarColor: myScheme.surface,
+            progressBarColor: myScheme.secondaryContainer,
+            bufferedBarColor: myScheme.onSurface,
+            thumbColor: myScheme.secondary,
+            thumbGlowColor: myScheme.secondary,
+            barCapShape: _barCapShape,
+            thumbRadius: _thumbRadius,
+            thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
+            timeLabelLocation: _labelLocation,
+            timeLabelType: _labelType,
+            timeLabelTextStyle:
+                TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
+            timeLabelPadding: _labelPadding,
         );
       },
     );
@@ -711,27 +715,30 @@ class _PlayerTabState extends State<PlayerTab> {
     return StreamBuilder<PlayerState>(
       stream: audioPlayer.playerStateStream,
       builder: (context, snapshot) {
-        return IconButton(
-            icon: Text(
-              currentIndication,
-              style: TextStyle(
-                color: myScheme.background,
-                fontWeight: FontWeight.w600,
-                fontSize: 30,
+        return Tooltip(
+          child: IconButton(
+              icon: Text(
+                currentIndication,
+                style: TextStyle(
+                  color: myScheme.background,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 30,
+                ),
               ),
-            ),
-            iconSize: 50.0,
-            onPressed: () => {
-                  if (audioPlayer.speed == thirdSpeed)
-                    {currentSpeed = firstSpeed, currentIndication = '1x'}
-                  else if (audioPlayer.speed == secondSpeed)
-                    {currentSpeed = thirdSpeed, currentIndication = '3x'}
-                  else
-                    {currentSpeed = secondSpeed, currentIndication = '2x'},
-                  setState(() {
-                    audioPlayer.setSpeed(currentSpeed);
-                  })
-                });
+              iconSize: 50.0,
+              onPressed: () => {
+                    if (audioPlayer.speed == thirdSpeed)
+                      {currentSpeed = firstSpeed, currentIndication = '1x'}
+                    else if (audioPlayer.speed == secondSpeed)
+                      {currentSpeed = thirdSpeed, currentIndication = '3x'}
+                    else
+                      {currentSpeed = secondSpeed, currentIndication = '2x'},
+                    setState(() {
+                      audioPlayer.setSpeed(currentSpeed);
+                    })
+                  }),
+          message: "play speed",
+        );
       },
     );
   }
@@ -757,11 +764,13 @@ class _PlayerTabState extends State<PlayerTab> {
   }
 
   Future<void> handleSleep() async {
+    Duration sec = audioPlayer.position;
     while (audioPlayer.volume > 0) {
       audioPlayer.setVolume(audioPlayer.volume - 0.01);
       await Future.delayed(const Duration(milliseconds: 25));
     }
     audioPlayer.pause();
+    audioPlayer.seek(sec);
     audioPlayer.setVolume(1.0);
   }
 }
