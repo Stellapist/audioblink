@@ -219,9 +219,7 @@ class _SearchTabState extends State<SearchTab> {
           searchBar(),
           //category items
           searchItem == '' && selectedCategory == ''
-              ? Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ? Expanded(
                   child: getCategoryButtons(),
                 )
               : Container(
@@ -256,7 +254,7 @@ class _SearchTabState extends State<SearchTab> {
           hintText: "Αναζήτηση",
           hintStyle: TextStyle(
             color: myScheme.primaryContainer,
-            fontSize: 17,
+            fontSize: 22,
             fontWeight: FontWeight.w400,
           ),
           enabledBorder: OutlineInputBorder(
@@ -296,13 +294,11 @@ class _SearchTabState extends State<SearchTab> {
     return Column(
       children: [
         Container(
-          child:
-              Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
-          margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
         ),
-        ConstrainedBox(
-          //TODO: FIX BELOW TO DYNAMIC HEIGHT
-          constraints: const BoxConstraints(maxHeight: 400),
+        Expanded(
           child: ListView.builder(
             itemCount: categoryButtons().length,
             itemBuilder: (BuildContext context, int index) {
@@ -318,8 +314,8 @@ class _SearchTabState extends State<SearchTab> {
     List<Widget> categoryButtons = <Widget>[];
     for (var i = 0; i < categories.length; i++) {
       categoryButtons.add(Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        margin: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 25),
         child: OutlinedButton(
           onPressed: () {
             setState(() {
