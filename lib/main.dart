@@ -12,7 +12,7 @@ void main() {
   runApp(const MyApp());
 }
 
-//Content of the application
+//APPLICATION CONTENT
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -32,47 +32,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//Content of tabbed activity
+//TABBED ACTIVITY CONTENT
 class Tabs extends StatefulWidget {
   const Tabs({Key? key}) : super(key: key);
-
   @override
   State<Tabs> createState() => _TabsState();
 }
-
+//STATE OF TABBED ACTIVITY
 class _TabsState extends State<Tabs> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    //Search Tab
-    Container(
-      color: myScheme.primary,
-      child: const SafeArea(
-        child: SearchTab(),
-      ),
-    ),
-    //Listening now Tab
-    Container(
-      color: myScheme.primary,
-      child: const SafeArea(
-        child: PlayerTab(),
-      ),
-    ),
-    //Library Tab
-    Container(
-      color: myScheme.primary,
-      child: const SafeArea(
-        child: LibraryTab(),
-      ),
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+  //Build Tabbed Activity
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,46 +71,55 @@ class _TabsState extends State<Tabs> {
       ),
     );
   }
+
+  //Tabs Content
+  static final List<Widget> _widgetOptions = <Widget>[
+    //Search Tab
+    Container(
+      color: myScheme.primary,
+      child: const SafeArea(
+        child: SearchTab(),
+      ),
+    ),
+    //Listening now Tab
+    Container(
+      color: myScheme.primary,
+      child: const SafeArea(
+        child: PlayerTab(),
+      ),
+    ),
+    //Library Tab
+    Container(
+      color: myScheme.primary,
+      child: const SafeArea(
+        child: LibraryTab(),
+      ),
+    ),
+  ];
+
+  //On Item Tapped Method
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 }
 
-//Content of the SEARCH tab
+//SEARCH TAB CONTENT
 class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
-
   @override
   _SearchTabState createState() => _SearchTabState();
 }
-
+//SEARCH TAB STATE
 class _SearchTabState extends State<SearchTab> {
   String selectedCategory = '';
   String? searchItem = '';
-  List<String> categories = [
-    'Λογοτεχνία',
-    'Ιστορία',
-    'Φιλοσοφία',
-    'Τέχνη',
-    'Επιστήμη',
-    'Πολιτική',
-    'Αρχαία Γραμματεία',
-    'Παιδικά',
-    'Θρησκεία',
-    'Κοινωνία',
-    'Βιογραφία',
-    'Διατροφή',
-    'Υγεία',
-    'Εκπαίδευση',
-    'Μαγειρική',
-    'Ποίηση',
-  ];
-
   final _controller = TextEditingController();
 
+  //Build
   @override
   Widget build(BuildContext context) {
-    return _handleSearch();
-  }
-
-  Widget _handleSearch() {
     return Container(
       color: myScheme.background,
       child: Column(
@@ -148,95 +127,105 @@ class _SearchTabState extends State<SearchTab> {
           //top welcome bar
           searchItem == '' && selectedCategory == ''
               ? Container(
-                  color: myScheme.primary,
-                  child: Row(
+            color: myScheme.primary,
+            child: Row(
+              children: [
+                Container(
+                  width: 200,
+                  padding: const EdgeInsets.fromLTRB(20, 45, 5, 20),
+                  child: Column(
+                    verticalDirection: VerticalDirection.up,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Container(
-                        width: 200,
-                        padding: const EdgeInsets.fromLTRB(20, 45, 5, 20),
-                        child: Column(
-                          verticalDirection: VerticalDirection.up,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                'Καλωσήρθες,',
-                                style: TextStyle(
-                                  color: myScheme.onPrimary,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 42),
-                        width: 110,
-                        child: Column(
-                          children: const [
-                            Image(
-                              image:
-                                  AssetImage('assets/images/landing_page.png'),
-                            ),
-                          ],
-                          verticalDirection: VerticalDirection.up,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          'Καλωσήρθες!',
+                          style: TextStyle(
+                            color: myScheme.onPrimary,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                )
-              : Stack(children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Misc.sectionTitle(
-                        selectedCategory, MainAxisAlignment.center),
-                  ),
-                  Positioned(
-                    top: 30,
-                    left: 10,
-                    child: Container(
-                      transform: Matrix4.translationValues(0.0, -15.0, 0.0),
-                      child: IconButton(
-                        color: myScheme.primary,
-                        iconSize: 35,
-                        onPressed: () {
-                          setState(() {
-                            searchItem = '';
-                            selectedCategory = '';
-                            _controller.clear();
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_back),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 42),
+                  width: 110,
+                  child: Column(
+                    children: const [
+                      Image(
+                        image:
+                        AssetImage('assets/images/landing_page.png'),
                       ),
-                    ),
+                    ],
+                    verticalDirection: VerticalDirection.up,
                   ),
-                ]),
+                ),
+              ],
+            ),
+          )
+              : Stack(children: [
+            Container(
+              padding: const EdgeInsets.only(top: 40),
+              child: Misc.sectionTitle(
+                  selectedCategory, MainAxisAlignment.center),
+            ),
+            Positioned(
+              top: 30,
+              left: 10,
+              child: Container(
+                transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+                child: IconButton(
+                  color: myScheme.primary,
+                  iconSize: 35,
+                  onPressed: () {
+                    setState(() {
+                      searchItem = '';
+                      selectedCategory = '';
+                      _controller.clear();
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+              ),
+            ),
+          ]),
           //search field
           searchBar(),
           //category items
           searchItem == '' && selectedCategory == ''
               ? Expanded(
-                  child: getCategoryButtons(),
-                )
+            child: getCategoryButtons(),
+          )
               : Container(
-                  color: myScheme.background,
-                  child: Column(
-                    children: [
-                      //search title
-                      //search field
-                      Text(searchItem.toString())
-                    ],
-                  ),
-                ),
+            color: myScheme.background,
+            child: Column(
+              children: [
+                //search title
+                //search field
+                Text(searchItem.toString())
+              ],
+            ),
+          ),
         ],
       ),
     );
+
   }
 
+  //Search For User Input Method
+  void searchForInput(){
+    setState(() {
+      selectedCategory = 'Αναζήτηση';
+    });
+  }
+
+  //WIDGETS
+  //Search Bar
   Widget searchBar() {
     return Container(
       padding: const EdgeInsets.all(25),
@@ -245,6 +234,7 @@ class _SearchTabState extends State<SearchTab> {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           color: myScheme.primary,
+          fontSize: 22
         ),
         decoration: InputDecoration(
           prefixIcon: Icon(
@@ -281,15 +271,13 @@ class _SearchTabState extends State<SearchTab> {
           ),
         ),
         onChanged: (String? val) {
-          setState(() {
-            searchItem = val;
-            selectedCategory = 'Αναζήτηση';
-          });
+          searchItem = val;
         },
+        onEditingComplete: searchForInput
       ),
     );
   }
-
+  //Category Buttons
   Widget getCategoryButtons() {
     return Column(
       children: [
@@ -309,22 +297,22 @@ class _SearchTabState extends State<SearchTab> {
       ],
     );
   }
-
+  //Category Buttons Content
   List<Widget> categoryButtons() {
     List<Widget> categoryButtons = <Widget>[];
-    for (var i = 0; i < categories.length; i++) {
+    for (var i = 0; i < Variables.categories.length; i++) {
       categoryButtons.add(Container(
         padding: const EdgeInsets.symmetric(vertical: 5),
         margin: const EdgeInsets.symmetric(horizontal: 25),
         child: OutlinedButton(
           onPressed: () {
             setState(() {
-              selectedCategory = categories[i];
+              selectedCategory = Variables.categories[i];
             });
           },
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             side: BorderSide(
               color: myScheme.primary,
@@ -335,7 +323,7 @@ class _SearchTabState extends State<SearchTab> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             child: Text(
-              categories[i],
+              Variables.categories[i],
               style: TextStyle(
                 color: myScheme.primaryContainer,
                 fontWeight: FontWeight.w400,
@@ -348,42 +336,24 @@ class _SearchTabState extends State<SearchTab> {
     }
     return categoryButtons;
   }
+
 }
 
-//Content of the PLAYING NOW tab
+//PLAYER TAB CONTENT
 class PlayerTab extends StatefulWidget {
   const PlayerTab({Key? key}) : super(key: key);
 
   @override
   _PlayerTabState createState() => _PlayerTabState();
 }
-
+//PLAYER TAB STATE
 class _PlayerTabState extends State<PlayerTab> {
+  //Variables
   AudioPlayer audioPlayer = AudioPlayer();
-  int hr = 0, mins = 0, secs = 0;
-  int sleep = 0;
-
+  int hr = 0, mins = 0, secs = 0, sleep = 0, sleepInMins = 0;
   late Timer showMessage;
-
-  int sleepInMins = 0;
-
-  var chapters = [
-    'Κεφάλαιο 1',
-    'Κεφάλαιο 2',
-    'Κεφάλαιο 3',
-    'Κεφάλαιο 4',
-    'Κεφάλαιο 5'
-  ];
-  String dropdownValue = 'Κεφάλαιο 1';
-
-  double firstSpeed = 1.0,
-      secondSpeed = 1.5,
-      thirdSpeed = 2.0,
-      currentSpeed = 1.0;
-  String currentIndication = '1x';
-
-  String path = 'assets/audio/rick.mp3';
-
+  String dropdownValue = 'Κεφάλαιο 1', currentIndication = '1x', path = 'assets/audio/rick.mp3';
+  double firstSpeed = 1.0, secondSpeed = 1.5, thirdSpeed = 2.0, currentSpeed = 1.0;
   late Stream<DurationState> _durationState;
   final _labelLocation = TimeLabelLocation.below;
   final _labelType = TimeLabelType.totalTime;
@@ -393,6 +363,7 @@ class _PlayerTabState extends State<PlayerTab> {
   final _barCapShape = BarCapShape.round;
   final _thumbCanPaintOutsideBar = true;
 
+  //Player Functions
   @override
   void initState() {
     super.initState();
@@ -407,7 +378,6 @@ class _PlayerTabState extends State<PlayerTab> {
             ));
     _init();
   }
-
   Future<void> _init() async {
     try {
       await audioPlayer.setAsset(path);
@@ -416,13 +386,25 @@ class _PlayerTabState extends State<PlayerTab> {
       debugPrint('An error occurred $e');
     }
   }
-
   @override
   void dispose() {
     audioPlayer.dispose();
     super.dispose();
   }
 
+  //Handle Sleep Method
+  Future<void> handleSleep() async {
+    Duration sec = audioPlayer.position;
+    while (audioPlayer.volume > 0) {
+      audioPlayer.setVolume(audioPlayer.volume - 0.01);
+      await Future.delayed(const Duration(milliseconds: 25));
+    }
+    audioPlayer.pause();
+    audioPlayer.seek(sec);
+    audioPlayer.setVolume(1.0);
+  }
+
+  //Build
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -458,7 +440,7 @@ class _PlayerTabState extends State<PlayerTab> {
                 ),
               ),
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: myScheme.primaryContainer,
               ),
@@ -467,7 +449,7 @@ class _PlayerTabState extends State<PlayerTab> {
                 Icons.keyboard_arrow_down_rounded,
                 color: myScheme.primaryContainer,
               ),
-              items: chapters.map((String chapters) {
+              items: Variables.chapters.map((String chapters) {
                 return DropdownMenuItem(
                   value: chapters,
                   child: Text(chapters),
@@ -488,7 +470,7 @@ class _PlayerTabState extends State<PlayerTab> {
             child: Text(
               'Book Author',
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 20,
                   fontWeight: FontWeight.w200,
                   color: myScheme.primary),
             ),
@@ -628,6 +610,8 @@ class _PlayerTabState extends State<PlayerTab> {
     );
   }
 
+  //WIDGETS
+  //Play Button
   StreamBuilder<PlayerState> _playButton() {
     return StreamBuilder<PlayerState>(
       stream: audioPlayer.playerStateStream,
@@ -675,7 +659,7 @@ class _PlayerTabState extends State<PlayerTab> {
       },
     );
   }
-
+  //Progress Bar
   StreamBuilder<DurationState> _progressBar() {
     return StreamBuilder<DurationState>(
       stream: _durationState,
@@ -707,13 +691,13 @@ class _PlayerTabState extends State<PlayerTab> {
           timeLabelLocation: _labelLocation,
           timeLabelType: _labelType,
           timeLabelTextStyle:
-              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w600),
+              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w400, fontSize: 18),
           timeLabelPadding: _labelPadding,
         );
       },
     );
   }
-
+  //Play Speed Button
   StreamBuilder<PlayerState> _playSpeed() {
     return StreamBuilder<PlayerState>(
       stream: audioPlayer.playerStateStream,
@@ -745,11 +729,11 @@ class _PlayerTabState extends State<PlayerTab> {
       },
     );
   }
-
+  //Previous Track Button
   void previousTrack() {}
-
+  //Next Track Button
   void nextTrack() {}
-
+  //Start Timer Button
   void startTimer() {
     showMessage = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -765,28 +749,18 @@ class _PlayerTabState extends State<PlayerTab> {
       });
     });
   }
-
-  Future<void> handleSleep() async {
-    Duration sec = audioPlayer.position;
-    while (audioPlayer.volume > 0) {
-      audioPlayer.setVolume(audioPlayer.volume - 0.01);
-      await Future.delayed(const Duration(milliseconds: 25));
-    }
-    audioPlayer.pause();
-    audioPlayer.seek(sec);
-    audioPlayer.setVolume(1.0);
-  }
 }
 
-//Content of the LIBRARY tab
+//LIBRARY TAB CONTENT
 class LibraryTab extends StatefulWidget {
   const LibraryTab({Key? key}) : super(key: key);
 
   @override
   _LibraryTabState createState() => _LibraryTabState();
 }
-
+//LIBRARY TAB STATE
 class _LibraryTabState extends State<LibraryTab> {
+  //Build
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -813,7 +787,7 @@ class _LibraryTabState extends State<LibraryTab> {
                 hintText: "Αναζήτηση",
                 hintStyle: TextStyle(
                   color: myScheme.primaryContainer,
-                  fontSize: 17,
+                  fontSize: 22,
                   fontWeight: FontWeight.w400,
                 ),
                 enabledBorder: OutlineInputBorder(
@@ -847,7 +821,7 @@ class _LibraryTabState extends State<LibraryTab> {
   }
 }
 
-//Misc
+//DURATION STATE
 class DurationState {
   const DurationState({
     required this.progress,
@@ -859,7 +833,7 @@ class DurationState {
   final Duration buffered;
   final Duration? total;
 }
-
+//COLOR SCHEME
 const ColorScheme myScheme = ColorScheme(
   primary: Color.fromRGBO(49, 32, 73, 1.0),
   primaryContainer: Color.fromRGBO(33, 24, 45, 0.7019607843137254),

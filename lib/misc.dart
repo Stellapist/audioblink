@@ -11,7 +11,7 @@ import 'main.dart';
 class Misc {
   //CATEGORY BUTTONS
 
-  //SECTION TITLE
+  //Section Title
   static Widget sectionTitle(String title, MainAxisAlignment mainAxisAlignment) {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
@@ -22,7 +22,7 @@ class Misc {
             title,
             style: TextStyle(
                 color: myScheme.primary,
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.w600),
             textAlign: TextAlign.left,
           ),
@@ -30,4 +30,33 @@ class Misc {
       ],
     );
   }
+}
+
+class Variables {
+  static const List<String> categories = [
+    'Λογοτεχνία',
+    'Ιστορία',
+    'Φιλοσοφία',
+    'Τέχνη',
+    'Επιστήμη',
+    'Πολιτική',
+    'Αρχαία Γραμματεία',
+    'Παιδικά',
+    'Θρησκεία',
+    'Κοινωνία',
+    'Βιογραφία',
+    'Διατροφή',
+    'Υγεία',
+    'Εκπαίδευση',
+    'Μαγειρική',
+    'Ποίηση',
+  ];
+
+  static const List<String> chapters = [
+  'Κεφάλαιο 1',
+  'Κεφάλαιο 2',
+  'Κεφάλαιο 3',
+  'Κεφάλαιο 4',
+  'Κεφάλαιο 5'
+  ];
 }
