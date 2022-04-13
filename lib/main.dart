@@ -35,9 +35,11 @@ class MyApp extends StatelessWidget {
 //TABBED ACTIVITY CONTENT
 class Tabs extends StatefulWidget {
   const Tabs({Key? key}) : super(key: key);
+
   @override
   State<Tabs> createState() => _TabsState();
 }
+
 //STATE OF TABBED ACTIVITY
 class _TabsState extends State<Tabs> {
   int _selectedIndex = 0;
@@ -108,9 +110,11 @@ class _TabsState extends State<Tabs> {
 //SEARCH TAB CONTENT
 class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
+
   @override
   _SearchTabState createState() => _SearchTabState();
 }
+
 //SEARCH TAB STATE
 class _SearchTabState extends State<SearchTab> {
   String selectedCategory = '';
@@ -127,98 +131,93 @@ class _SearchTabState extends State<SearchTab> {
           //top welcome bar
           searchItem == '' && selectedCategory == ''
               ? Container(
-            color: myScheme.primary,
-            child: Row(
-              children: [
-                Container(
-                  width: 200,
-                  padding: const EdgeInsets.fromLTRB(20, 45, 5, 20),
-                  child: Column(
-                    verticalDirection: VerticalDirection.up,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  color: myScheme.primary,
+                  child: Row(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          'Καλωσήρθες!',
-                          style: TextStyle(
-                            color: myScheme.onPrimary,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        width: 200,
+                        padding: const EdgeInsets.fromLTRB(20, 45, 5, 20),
+                        child: Column(
+                          verticalDirection: VerticalDirection.up,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Καλωσήρθες!',
+                              style: TextStyle(
+                                color: myScheme.onPrimary,
+                                fontSize: 28,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 42),
+                        width: 110,
+                        child: Column(
+                          children: const [
+                            Image(
+                              image:
+                                  AssetImage('assets/images/landing_page.png'),
+                            ),
+                          ],
+                          verticalDirection: VerticalDirection.up,
                         ),
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 42),
-                  width: 110,
-                  child: Column(
-                    children: const [
-                      Image(
-                        image:
-                        AssetImage('assets/images/landing_page.png'),
-                      ),
-                    ],
-                    verticalDirection: VerticalDirection.up,
-                  ),
-                ),
-              ],
-            ),
-          )
+                )
               : Stack(children: [
-            Container(
-              padding: const EdgeInsets.only(top: 40),
-              child: Misc.sectionTitle(
-                  selectedCategory, MainAxisAlignment.center),
-            ),
-            Positioned(
-              top: 30,
-              left: 10,
-              child: Container(
-                transform: Matrix4.translationValues(0.0, -15.0, 0.0),
-                child: IconButton(
-                  color: myScheme.primary,
-                  iconSize: 35,
-                  onPressed: () {
-                    setState(() {
-                      searchItem = '';
-                      selectedCategory = '';
-                      _controller.clear();
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    });
-                  },
-                  icon: const Icon(Icons.arrow_back),
-                ),
-              ),
-            ),
-          ]),
+                  Container(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Misc.sectionTitle(
+                        selectedCategory, MainAxisAlignment.center),
+                  ),
+                  Positioned(
+                    top: 30,
+                    left: 10,
+                    child: Container(
+                      transform: Matrix4.translationValues(0.0, -15.0, 0.0),
+                      child: IconButton(
+                        color: myScheme.primary,
+                        iconSize: 35,
+                        onPressed: () {
+                          setState(() {
+                            searchItem = '';
+                            selectedCategory = '';
+                            _controller.clear();
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_back),
+                      ),
+                    ),
+                  ),
+                ]),
           //search field
           searchBar(),
           //category items
           searchItem == '' && selectedCategory == ''
               ? Expanded(
-            child: getCategoryButtons(),
-          )
+                  child: getCategoryButtons(),
+                )
               : Container(
-            color: myScheme.background,
-            child: Column(
-              children: [
-                //search title
-                //search field
-                Text(searchItem.toString())
-              ],
-            ),
-          ),
+                  color: myScheme.background,
+                  child: Column(
+                    children: [
+                      //search title
+                      Text(searchItem.toString())
+                    ],
+                  ),
+                ),
         ],
       ),
     );
-
   }
 
   //Search For User Input Method
-  void searchForInput(){
+  void searchForInput() {
     setState(() {
       selectedCategory = 'Αναζήτηση';
     });
@@ -230,53 +229,52 @@ class _SearchTabState extends State<SearchTab> {
     return Container(
       padding: const EdgeInsets.all(25),
       child: TextFormField(
-        controller: _controller,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: myScheme.primary,
-          fontSize: 22
-        ),
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: myScheme.primaryContainer,
-          ),
-          hintText: "Αναζήτηση",
-          hintStyle: TextStyle(
-            color: myScheme.primaryContainer,
-            fontSize: 22,
-            fontWeight: FontWeight.w400,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
+          controller: _controller,
+          style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: myScheme.primary,
+              fontSize: 22),
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: myScheme.primaryContainer,
+            ),
+            hintText: "Αναζήτηση",
+            hintStyle: TextStyle(
+              color: myScheme.primaryContainer,
+              fontSize: 22,
+              fontWeight: FontWeight.w400,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: myScheme.primary,
+                  width: 2.0,
+                  style: BorderStyle.solid),
+              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
                 color: myScheme.secondary,
                 width: 2.0,
-                style: BorderStyle.solid),
-            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: myScheme.secondary,
-              width: 2.0,
-              style: BorderStyle.solid,
+                style: BorderStyle.solid,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-          ),
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2.0,
-              style: BorderStyle.solid,
+            border: const OutlineInputBorder(
+              borderSide: BorderSide(
+                width: 2.0,
+                style: BorderStyle.solid,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
             ),
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
           ),
-        ),
-        onChanged: (String? val) {
-          searchItem = val;
-        },
-        onEditingComplete: searchForInput
-      ),
+          onChanged: (String? val) {
+            searchItem = val;
+          },
+          onEditingComplete: searchForInput),
     );
   }
+
   //Category Buttons
   Widget getCategoryButtons() {
     return Column(
@@ -284,7 +282,8 @@ class _SearchTabState extends State<SearchTab> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           margin: const EdgeInsets.only(bottom: 10),
-          child: Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
+          child:
+              Misc.sectionTitle('Κατηγοριες Βιβλίων', MainAxisAlignment.start),
         ),
         Expanded(
           child: ListView.builder(
@@ -297,6 +296,7 @@ class _SearchTabState extends State<SearchTab> {
       ],
     );
   }
+
   //Category Buttons Content
   List<Widget> categoryButtons() {
     List<Widget> categoryButtons = <Widget>[];
@@ -321,7 +321,7 @@ class _SearchTabState extends State<SearchTab> {
             ),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
               Variables.categories[i],
               style: TextStyle(
@@ -336,7 +336,6 @@ class _SearchTabState extends State<SearchTab> {
     }
     return categoryButtons;
   }
-
 }
 
 //PLAYER TAB CONTENT
@@ -346,14 +345,20 @@ class PlayerTab extends StatefulWidget {
   @override
   _PlayerTabState createState() => _PlayerTabState();
 }
+
 //PLAYER TAB STATE
 class _PlayerTabState extends State<PlayerTab> {
   //Variables
   AudioPlayer audioPlayer = AudioPlayer();
   int hr = 0, mins = 0, secs = 0, sleep = 0, sleepInMins = 0;
-  late Timer showMessage;
-  String dropdownValue = 'Κεφάλαιο 1', currentIndication = '1x', path = 'assets/audio/rick.mp3';
-  double firstSpeed = 1.0, secondSpeed = 1.5, thirdSpeed = 2.0, currentSpeed = 1.0;
+  late Timer sleepTimer;
+  String dropdownValue = 'Κεφάλαιο 1',
+      currentIndication = '1x',
+      path = 'assets/audio/rick.mp3';
+  double firstSpeed = 1.0,
+      secondSpeed = 1.5,
+      thirdSpeed = 2.0,
+      currentSpeed = 1.0;
   late Stream<DurationState> _durationState;
   final _labelLocation = TimeLabelLocation.below;
   final _labelType = TimeLabelType.totalTime;
@@ -378,6 +383,7 @@ class _PlayerTabState extends State<PlayerTab> {
             ));
     _init();
   }
+
   Future<void> _init() async {
     try {
       await audioPlayer.setAsset(path);
@@ -386,6 +392,7 @@ class _PlayerTabState extends State<PlayerTab> {
       debugPrint('An error occurred $e');
     }
   }
+
   @override
   void dispose() {
     audioPlayer.dispose();
@@ -395,13 +402,14 @@ class _PlayerTabState extends State<PlayerTab> {
   //Handle Sleep Method
   Future<void> handleSleep() async {
     Duration sec = audioPlayer.position;
+    double vol = audioPlayer.volume;
     while (audioPlayer.volume > 0) {
       audioPlayer.setVolume(audioPlayer.volume - 0.01);
       await Future.delayed(const Duration(milliseconds: 25));
     }
     audioPlayer.pause();
     audioPlayer.seek(sec);
-    audioPlayer.setVolume(1.0);
+    audioPlayer.setVolume(vol);
   }
 
   //Build
@@ -552,12 +560,12 @@ class _PlayerTabState extends State<PlayerTab> {
                         sleep = resDur.inSeconds;
                         startTimer();
                       } else {
-                        showMessage.cancel();
+                        sleepTimer.cancel();
                       }
                     } else {
                       setState(() {
                         sleep = 0;
-                        (showMessage.cancel());
+                        (sleepTimer.cancel());
                       });
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
@@ -659,6 +667,7 @@ class _PlayerTabState extends State<PlayerTab> {
       },
     );
   }
+
   //Progress Bar
   StreamBuilder<DurationState> _progressBar() {
     return StreamBuilder<DurationState>(
@@ -690,13 +699,16 @@ class _PlayerTabState extends State<PlayerTab> {
           thumbCanPaintOutsideBar: _thumbCanPaintOutsideBar,
           timeLabelLocation: _labelLocation,
           timeLabelType: _labelType,
-          timeLabelTextStyle:
-              TextStyle(color: myScheme.primary, fontWeight: FontWeight.w400, fontSize: 18),
+          timeLabelTextStyle: TextStyle(
+              color: myScheme.primary,
+              fontWeight: FontWeight.w400,
+              fontSize: 18),
           timeLabelPadding: _labelPadding,
         );
       },
     );
   }
+
   //Play Speed Button
   StreamBuilder<PlayerState> _playSpeed() {
     return StreamBuilder<PlayerState>(
@@ -729,13 +741,16 @@ class _PlayerTabState extends State<PlayerTab> {
       },
     );
   }
+
   //Previous Track Button
   void previousTrack() {}
+
   //Next Track Button
   void nextTrack() {}
+
   //Start Timer Button
   void startTimer() {
-    showMessage = Timer.periodic(const Duration(seconds: 1), (timer) {
+    sleepTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (sleep > 0) {
           hr = sleep ~/ 3600;
@@ -744,7 +759,7 @@ class _PlayerTabState extends State<PlayerTab> {
           sleep--;
         } else {
           handleSleep();
-          showMessage.cancel();
+          sleepTimer.cancel();
         }
       });
     });
@@ -758,6 +773,7 @@ class LibraryTab extends StatefulWidget {
   @override
   _LibraryTabState createState() => _LibraryTabState();
 }
+
 //LIBRARY TAB STATE
 class _LibraryTabState extends State<LibraryTab> {
   //Build
@@ -833,6 +849,7 @@ class DurationState {
   final Duration buffered;
   final Duration? total;
 }
+
 //COLOR SCHEME
 const ColorScheme myScheme = ColorScheme(
   primary: Color.fromRGBO(49, 32, 73, 1.0),
