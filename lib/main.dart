@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:duration_picker/duration_picker.dart';
 
 import 'misc.dart';
+import 'bookItem.dart';
 
 void main() {
   runApp(const MyApp());
@@ -121,6 +123,60 @@ class _SearchTabState extends State<SearchTab> {
   String? searchItem = '';
   final _controller = TextEditingController();
 
+  //TODO MAYBE MAKE IT GLOBAL PUBLIC
+  final player = AudioPlayer();
+
+  //TEMP STATIC BOOK ITEMS
+  List<String> images = [
+    'assets/images/rick_shoe.jpg',
+    'assets/images/rick_shoe.jpg',
+    'assets/images/rick_shoe.jpg',
+    'assets/images/rick_shoe.jpg',
+    'assets/images/rick_shoe.jpg',
+    'assets/images/rick_shoe.jpg'
+  ];
+  List<String> titles = [
+    'Never gonna',
+    'Never gonna',
+    'Never gonna',
+    'Never gonna',
+    'Never gonna',
+    'Never gonna'
+  ];
+  List<String> authors = [
+    'Rick Astley',
+    'Rick Astley',
+    'Rick Astley',
+    'Rick Astley',
+    'Rick Astley',
+    'Rick Astley'
+  ];
+  List<String> readers = [
+    'Give U. Up',
+    'Give U. Up',
+    'Give U. Up',
+    'Give U. Up',
+    'Give U. Up',
+    'Give U. Up'
+  ];
+  List<String> audios = [
+    'assets/audio/rick.mp3',
+    'assets/audio/rick.mp3',
+    'assets/audio/rick.mp3',
+    'assets/audio/rick.mp3',
+    'assets/audio/rick.mp3',
+    'assets/audio/rick.mp3'
+  ];
+
+  List<String> durations = [
+    '23:41:12',
+    '23:41:12',
+    '23:41:12',
+    '23:41:12',
+    '23:41:12',
+    '23:41:12'
+  ];
+
   //Build
   @override
   Widget build(BuildContext context) {
@@ -168,33 +224,36 @@ class _SearchTabState extends State<SearchTab> {
                     ],
                   ),
                 )
-              : Stack(children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Misc.sectionTitle(
-                        selectedCategory, MainAxisAlignment.center),
-                  ),
-                  Positioned(
-                    top: 30,
-                    left: 10,
-                    child: Container(
-                      transform: Matrix4.translationValues(0.0, -15.0, 0.0),
-                      child: IconButton(
-                        color: myScheme.primary,
-                        iconSize: 35,
-                        onPressed: () {
-                          setState(() {
-                            searchItem = '';
-                            selectedCategory = '';
-                            _controller.clear();
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_back),
-                      ),
-                    ),
-                  ),
-                ]),
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          color: myScheme.primary,
+                          iconSize: 35,
+                          onPressed: () {
+                            setState(() {
+                              searchItem = '';
+                              selectedCategory = '';
+                              _controller.clear();
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_back),
+                        ),
+                        Container(
+                          child: Misc.sectionTitle(
+                              selectedCategory, MainAxisAlignment.center),
+                        ),
+                        IconButton(
+                          color: myScheme.background,
+                          iconSize: 35,
+                          onPressed: () {},
+                          icon: const Icon(Icons.arrow_back),
+                        ),
+                      ]),
+                ),
           //search field
           searchBar(),
           //category items
@@ -202,15 +261,7 @@ class _SearchTabState extends State<SearchTab> {
               ? Expanded(
                   child: getCategoryButtons(),
                 )
-              : Container(
-                  color: myScheme.background,
-                  child: Column(
-                    children: [
-                      //search title
-                      Text(searchItem.toString())
-                    ],
-                  ),
-                ),
+              : Expanded(child: getBookItems()),
         ],
       ),
     );
@@ -221,6 +272,43 @@ class _SearchTabState extends State<SearchTab> {
     setState(() {
       selectedCategory = 'Αναζήτηση';
     });
+  }
+
+  //get book items individually according to search criteria
+  Widget getBookItems() {
+    return ListView.builder(
+        itemCount: booksList().length,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (BuildContext context, int index) {
+          return booksList().elementAt(index);
+        });
+  }
+
+  List<Widget> booksList() {
+    List<Widget> booksList = <Widget>[];
+    for (var i = 0; i < images.length; i++) {
+      booksList.add(Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              //TODO ADD BOOK INFO
+            },
+            child: BookItem.getBookItem(images[i], titles[i], authors[i],
+                readers[i], audios[i], durations[i]),
+          ),
+          Divider(
+            color: i + 1 < images.length
+                ? myScheme.primaryContainer
+                : myScheme.background,
+            thickness: 0.5,
+            indent: 30,
+            height: 20,
+            endIndent: 30,
+          )
+        ],
+      ));
+    }
+    return booksList;
   }
 
   //WIDGETS
@@ -350,6 +438,7 @@ class PlayerTab extends StatefulWidget {
 class _PlayerTabState extends State<PlayerTab> {
   //Variables
   AudioPlayer audioPlayer = AudioPlayer();
+  bool initialized = false;
   int hr = 0, mins = 0, secs = 0, sleep = 0, sleepInMins = 0;
   late Timer sleepTimer;
   String dropdownValue = 'Κεφάλαιο 1',
@@ -372,7 +461,6 @@ class _PlayerTabState extends State<PlayerTab> {
   @override
   void initState() {
     super.initState();
-    audioPlayer = AudioPlayer();
     _durationState = Rx.combineLatest2<Duration, PlaybackEvent, DurationState>(
         audioPlayer.positionStream,
         audioPlayer.playbackEventStream,
@@ -385,6 +473,7 @@ class _PlayerTabState extends State<PlayerTab> {
   }
 
   Future<void> _init() async {
+    initialized = true;
     try {
       await audioPlayer.setAsset(path);
       audioPlayer.setSpeed(firstSpeed);
@@ -395,8 +484,9 @@ class _PlayerTabState extends State<PlayerTab> {
 
   @override
   void dispose() {
-    audioPlayer.dispose();
     super.dispose();
+    //TODO THIS DISPOSE DELETES PREVIOUS AUDIOPLAYER SO THAT A NEW ONE IS MADE. MAKE IT SO THAT IT DOESN'T CREATE A NEW ONE IF THERE IS ALREADY ONE CREATED AND DELETE BELOW 'DISPOSE'
+    audioPlayer.dispose();
   }
 
   //Handle Sleep Method
@@ -808,7 +898,7 @@ class _LibraryTabState extends State<LibraryTab> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: myScheme.secondary,
+                      color: myScheme.primary,
                       width: 2.0,
                       style: BorderStyle.solid),
                   borderRadius: const BorderRadius.all(Radius.circular(12.0)),

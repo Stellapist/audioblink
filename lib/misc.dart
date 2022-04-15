@@ -2,14 +2,16 @@ import 'package:audioblink/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'main.dart';
 
+
 class Misc {
-  //CATEGORY BUTTONS
 
   //Section Title
-  static Widget sectionTitle(String title, MainAxisAlignment mainAxisAlignment) {
+  static Widget sectionTitle(
+      String title, MainAxisAlignment mainAxisAlignment) {
     return Row(
       mainAxisAlignment: mainAxisAlignment,
       children: [
@@ -50,10 +52,10 @@ class Variables {
   ];
 
   static const List<String> chapters = [
-  'Κεφάλαιο 1',
-  'Κεφάλαιο 2',
-  'Κεφάλαιο 3',
-  'Κεφάλαιο 4',
-  'Κεφάλαιο 5'
+    'Κεφάλαιο 1',
+    'Κεφάλαιο 2',
+    'Κεφάλαιο 3',
+    'Κεφάλαιο 4',
+    'Κεφάλαιο 5'
   ];
 }
