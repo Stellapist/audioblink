@@ -10,6 +10,8 @@ import 'package:duration_picker/duration_picker.dart';
 import 'misc.dart';
 import 'bookItem.dart';
 
+//stella
+
 void main() {
   runApp(const MyApp());
 }
